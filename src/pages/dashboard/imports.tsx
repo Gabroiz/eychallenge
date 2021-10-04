@@ -2,7 +2,7 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import { Container, IconButton, Grid, Typography} from '@mui/material';
-import { FileCopy } from '@material-ui/icons';
+import { FileCopy } from '@mui/icons-material';
 
 const Input = styled('input')({
     display: 'none',

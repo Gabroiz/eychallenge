@@ -11,10 +11,9 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@material-ui/icons": "^4.11.2",
     "@mui/core": "^5.0.0-alpha.49",
+    "@mui/icons-material": "^5.0.1",
     "@mui/material": "^5.0.2",
-    "@mui/styled-engine-sc": "^5.0.0",
     "@mui/styles": "^5.0.1",
     "@mui/x-data-grid": "^5.0.0-beta.2",
     "axios": "^0.21.4",
@@ -24,8 +23,7 @@
     "react-chartjs-2": "^3.0.5",
     "react-dom": "17.0.2",
     "react-icons": "^4.2.0",
-    "sass": "^1.42.1",
-    "styled-components": "^5.3.1"
+    "sass": "^1.42.1"
   },
   "devDependencies": {
     "@types/react": "17.0.24",
