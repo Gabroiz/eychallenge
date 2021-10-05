@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Box, Container, Grid, Paper } from '@mui/material';
+import { Box, Typography, Grid, Paper } from '@mui/material';
 import PieChart from 'Components/PieChart';
 import EmpTable from 'Components/EmpTable';
 
 
 export default function Dashboard() {
   return (
-    <Container maxWidth="xl">
+    <React.Fragment>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Paper sx={{  display: "flex", flexDirection: "row", justifyContent: "center", height: 350 }} variant="outlined" square>
@@ -21,11 +21,11 @@ export default function Dashboard() {
           
         </Grid>
         <Grid item xs={12} md={6}>
-          <Box sx={{ height: 350 }}>
-
+          <Paper sx={{ height: 350 }}>
+            <Typography component="h2" variant="h6" gutterBottom>Funcionarios</Typography>
             <EmpTable/>
 
-          </Box>
+          </Paper>
         </Grid>
         <Grid item xs={12} md={6}>
           <Paper sx={{ height: 350 }} variant="outlined" square></Paper>
@@ -34,6 +34,6 @@ export default function Dashboard() {
           <Paper sx={{ height: 350 }} variant="outlined" square></Paper>
         </Grid>
       </Grid>
-    </Container>
+    </React.Fragment>
   )
 }
