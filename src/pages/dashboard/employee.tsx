@@ -1,15 +1,31 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import { Paper, IconButton, Grid, TextField, Typography, Select, MenuItem, InputLabel, SelectChangeEvent, FormControl, Box } from '@mui/material';
+import { Paper, IconButton, Grid, TextField, Typography, Select, MenuItem, InputLabel, SelectChangeEvent, FormControl, Box, Dialog, Container } from '@mui/material';
 import { AddBox, HighlightOff} from '@mui/icons-material';
 import { green, red } from '@mui/material/colors';
-
+import ListItemText from '@mui/material/ListItemText';
+import ListItem from '@mui/material/ListItem';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import CloseIcon from '@mui/icons-material/Close';
+import Slide from '@mui/material/Slide';
+import { grid } from '@mui/system';
 
 export default function Employee() {
     const [status, setStatus] = React.useState('');
     const [attribute, setAttribute] = React.useState('');
     const [currentPosition, setCurrentPosition] = React.useState('');
     const [business, setBusiness] = React.useState('');
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    }
+    const handleClose = () => {
+        setOpen(false);
+    }
     
     const handleChange = (event: SelectChangeEvent) => {
         setStatus(event.target.value);
@@ -105,12 +121,45 @@ export default function Employee() {
                     </Grid>
                     <Grid item xs={12} md={12} marginTop={2}>
                         <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                            <Button color="secondary" variant="contained">Simular Promoção</Button>
+                            <Button color="secondary" variant="outlined" onClick={handleClickOpen}>Simular Promoção</Button>
+                            <Dialog
+                                fullScreen
+                                open={open}
+                                onClose={handleClose}
+                            >
+                                <AppBar sx={{ position: 'relative' }}>
+                                <Toolbar>
+                                    <IconButton
+                                    edge="start"
+                                    color="inherit"
+                                    onClick={handleClose}
+                                    aria-label="close"
+                                    >
+                                    <CloseIcon />
+                                    </IconButton>
+                                    <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                                    Simulação
+                                    </Typography>
+                                    <Button autoFocus color="inherit" onClick={handleClose}>
+                                    Salvar
+                                    </Button>
+                                </Toolbar>
+                                </AppBar>
+                                <Container maxWidth="xl">
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12}>
+                                            <TextField fullWidth id="outlined-basic" label="Salário Atual" variant="outlined" size="small"/>
+                                            <TextField fullWidth id="outlined-basic" label="Salário com Bonificação" variant="outlined" size="small"/>
+                                            <TextField fullWidth id="outlined-basic" label="Novo Cargo" variant="outlined" size="small"/>
+                                        </Grid>
+                                    </Grid>
+                                </Container>
+                            </Dialog>
                         </Box>
                     </Grid>
-                        
+                                                
                 </Grid>
             </Paper>
         </React.Fragment>
-    )
+                            )
 }
