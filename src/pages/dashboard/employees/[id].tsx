@@ -1,9 +1,9 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import { Paper, IconButton, Grid, TextField, Typography, Select, MenuItem, InputLabel, SelectChangeEvent, FormControl, Box } from '@mui/material';
+import { Paper, IconButton, Grid, TextField, Select, MenuItem, InputLabel, SelectChangeEvent, FormControl, Box, Dialog, AppBar, Toolbar, Typography, Container } from '@mui/material';
 import { AddBox, HighlightOff} from '@mui/icons-material';
 import { green, red } from '@mui/material/colors';
-
+import CloseIcon from '@mui/icons-material/Close';
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -28,6 +28,14 @@ export default function Employee() {
         setCurrentPosition(event.target.value);
         setBusiness(event.target.value);
     };
+
+    const [open, setOpen] = React.useState(false);
+    const handleClickOpen = () => {
+        setOpen(true);
+    }
+    const handleClose = () => {
+        setOpen(false);
+    }
 
     return (
         <React.Fragment>
@@ -135,7 +143,42 @@ export default function Employee() {
                     </Grid>
                     <Grid item xs={12} md={12} marginTop={2}>
                         <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                            <Button color="secondary" variant="contained">Simular Promoção</Button>
+                            <Button color="secondary" variant="contained" onClick={handleClickOpen}>Simular Promoção</Button>
+                            <Dialog
+                                fullScreen
+                                open={open}
+                                onClose={handleClose}>
+                                <AppBar sx={{ position: 'relative' }}>
+                                <Toolbar>
+                                    <IconButton
+                                    edge="start"
+                                    color="inherit"
+                                    onClick={handleClose}
+                                    aria-label="close">
+                                    <CloseIcon />
+                                    </IconButton>
+                                    <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                                        Simulação
+                                    </Typography>
+                                    <Button autoFocus color="secondary" variant="contained" onClick={handleClose}>
+                                        Promover
+                                    </Button>
+                                </Toolbar>
+                                </AppBar>
+                                <Container maxWidth="xl" sx={{p:5}}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12}>
+                                            <TextField fullWidth id="outlined-basic" label="Salário Atual" variant="outlined" size="small"/>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                            <TextField fullWidth id="outlined-basic" label="Salário com Bonificação" variant="outlined" size="small"/>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                            <TextField fullWidth id="outlined-basic" label="Novo Cargo" variant="outlined" size="small"/>
+                                        </Grid>
+                                    </Grid>
+                                </Container>
+                            </Dialog>
                         </Box>
                     </Grid>
                         
