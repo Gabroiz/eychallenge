@@ -15,6 +15,8 @@ const rows = [
 ];
 
 export default function DataTable() {
+
+  
   return (
     <div style={{ height: 350, width: '100%' }}>
       <DataGrid
