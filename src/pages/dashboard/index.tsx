@@ -4,8 +4,6 @@ import PieChart from 'Components/PieChart';
 import EmpTable from 'Components/EmpTable';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-
-
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
