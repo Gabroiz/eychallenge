@@ -1,21 +1,50 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import { Paper, Grid, Typography,  Box } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Paper, Grid, Typography,  Box, SelectChangeEvent } from '@mui/material';
+import { DataGrid, GridColDef, GridSelectionModel } from '@mui/x-data-grid';
+import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import Link from 'next/link';
 
-const columns: GridColDef[] = [
-    { field: 'id', headerName: 'GPN', width: 100 },
-    { field: 'nome', headerName: 'Nome', width: 100 },
-];
+type Emp = {
+    id: number
+    gpn: string
+    name: string
+    jobTitle: string
+    promotion: string
+    actualLead: string
+    futureRank: string
+  }
   
-const rows = [
-    { id: 1, nome: 'Snow' },
+  export const getStaticProps = async () => {
+    const res = await fetch('https://performance-tracker-fiap.herokuapp.com/employee-evaluation')
+    const emps: Emp[] = await res.json()
+  
+    return {
+      props: {
+        emps,
+      },
+    }
+  }
+
+const columns: GridColDef[] = [
+    { field: 'id', headerName: 'id', hide: true },
+    { field: 'gpn', headerName: 'GPN', flex: 0.1 },
+    { field: 'name', headerName: 'Nome', flex: 0.2 },
+    { field: 'jobTitle', headerName: 'Cargo', flex: 0.2 },
+    { field: 'promotion', headerName: 'Promoção', flex: 0.1 },
+    { field: 'actualLead', headerName: 'Lead Atual', flex: 0.1 },
+    { field: 'futureRank', headerName: 'Próximo Cargo', flex: 0.2 },
 ];
 
-export default function Employee() {
-    const gpn = 'd-000001'
+export default function Employee({ emps }: InferGetStaticPropsType<typeof getStaticProps>) {
+    const gpn = 1
 
+    const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
+
+    const [btnStatus, setBtnStatus] = React.useState(true);
+    function handleClick(value: boolean) {
+        setBtnStatus(value);
+      }
     return (
         <React.Fragment>
             <Grid container spacing={2}>
@@ -23,19 +52,28 @@ export default function Employee() {
                     <Paper sx={{ p:2 }}>
                         <Grid container direction="row" justifyContent="space-between" >
                             <Typography component="h2" variant="h6" gutterBottom>Funcionarios</Typography>
-                            <Link href={'employees/' + gpn} passHref>
-                                <Button disabled color="secondary" variant="contained">Exibir Funcionário</Button>
+                            <Link href={`/dashboard/employees/${encodeURIComponent(selectionModel[0])}`} passHref>
+                                <Button disabled={btnStatus} color="secondary" variant="contained">Exibir Funcionário</Button>
                             </Link>
                         </Grid>
                         <Grid item xs={12}>
                             <Box sx={{ mt:2 }}>
-                                <div style={{ height: 350, width: '100%' }}>
+                                <Box style={{ height: 350, width: '100%' }}>
                                     <DataGrid
-                                        rows={rows}
+                                        onSelectionModelChange={(newSelectionModel) => {
+                                            setSelectionModel(newSelectionModel);
+                                            if (newSelectionModel.length < 1) {
+                                                handleClick(true)
+                                            } else {
+                                                handleClick(false)
+                                            }
+                                        }}
+                                        selectionModel={selectionModel}
+                                        rows={emps}
                                         columns={columns}
                                         pageSize={4}
                                         rowsPerPageOptions={[4]}/>
-                                </div>
+                                </Box>
                             </Box>
                         </Grid>
                     </Paper>

@@ -10,7 +10,31 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import { useRouter } from 'next/router';
 
-export default function Employee() {
+import { GetStaticProps, InferGetStaticPropsType } from 'next'
+
+type Emp = {
+    id: number
+    gpn: string
+    name: string
+    jobTitle: string
+    promotion: string
+    actualLead: string
+    futureRank: string
+}
+  
+export const getStaticProps = async () => {
+    const res = await fetch('https://performance-tracker-fiap.herokuapp.com/employee-evaluation')
+    const emps: Emp[] = await res.json()
+    
+    return {
+        props: {
+            emps,
+        },
+    }
+}
+
+export default function Employee({ emps }: InferGetStaticPropsType<typeof getStaticProps>) {
+    
     const router = useRouter()
     const { id } = router.query
 
@@ -158,7 +182,7 @@ export default function Employee() {
                                     <CloseIcon />
                                     </IconButton>
                                     <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                                        Simulação
+                                        Simulação de Promoção
                                     </Typography>
                                     <Button autoFocus color="secondary" variant="contained" onClick={handleClose}>
                                         Promover
