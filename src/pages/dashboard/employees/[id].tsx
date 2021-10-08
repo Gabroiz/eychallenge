@@ -5,45 +5,42 @@ import { AddBox, HighlightOff} from '@mui/icons-material';
 import { green, red } from '@mui/material/colors';
 import CloseIcon from '@mui/icons-material/Close';
 
+import { format, parse } from 'date-fns'
+
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
+
 import { useRouter } from 'next/router';
 
-import { GetStaticProps, InferGetStaticPropsType } from 'next'
-
 type Emp = {
+    emp: EmpType
+}
+
+type EmpType = {
     id: number
     gpn: string
     name: string
+    employeeStatus: string
+    gender: string
     jobTitle: string
+    hiringDate: string
+    utilization: number
     promotion: string
     actualLead: string
     futureRank: string
 }
-  
-export const getStaticProps = async () => {
-    const res = await fetch('https://performance-tracker-fiap.herokuapp.com/employee-evaluation')
-    const emps: Emp[] = await res.json()
-    
-    return {
-        props: {
-            emps,
-        },
-    }
-}
 
-export default function Employee({ emps }: InferGetStaticPropsType<typeof getStaticProps>) {
+const Employee = ({ emp }: Emp) => {
     
     const router = useRouter()
-    const { id } = router.query
 
     const [status, setStatus] = React.useState('');
     const [attribute, setAttribute] = React.useState('');
     const [currentPosition, setCurrentPosition] = React.useState('');
     const [business, setBusiness] = React.useState('');
 
-    const [hiringDate, setHiringDate] = React.useState<Date | null>(new Date());
+    const [hiringDate, setHiringDate] = React.useState<Date | null>(parse(emp.hiringDate, 'yyyy-dd-MM', new Date()));
     const [lastPromotionDate, setLastPromotionDate] = React.useState<Date | null>(new Date());
     
     const handleChange = (event: SelectChangeEvent) => {
@@ -64,25 +61,25 @@ export default function Employee({ emps }: InferGetStaticPropsType<typeof getSta
     return (
         <React.Fragment>
             <Paper sx={{ p:5 }}>  
-                <Grid container spacing={2}>
+                <Grid container spacing={3}>
                     <Grid container item xs={12} spacing={3}>
-                        <Grid item xs={6} md={3}>
-                            <TextField fullWidth id="outlined-basic" label="GPN" defaultValue={id} variant="filled" size="small" InputProps={{readOnly: true}}/>
+                        <Grid item xs={6} md={2}>
+                            <TextField fullWidth id="outlined-basic" label="GPN" defaultValue={emp.gpn} variant="filled" size="small" InputProps={{readOnly: true}}/>
                         </Grid>
-                        <Grid item xs={6} md={3}>
-                            <TextField fullWidth id="outlined-basic" label="Situação (Lead)" defaultValue="Promotion" variant="filled" size="small" InputProps={{readOnly: true}}/>
+                        <Grid item xs={6} md={2}>
+                            <TextField fullWidth id="outlined-basic" label="Situação de Promoção" defaultValue={emp.promotion} variant="filled" size="small" InputProps={{readOnly: true}}/>
+                        </Grid>
+                        <Grid item xs={6} md={2}>
+                            <TextField fullWidth id="outlined-basic" label="Lead atual" defaultValue={emp.actualLead} variant="filled" size="small" InputProps={{readOnly: true}}/>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} md={6}>
-                        <TextField fullWidth id="outlined-basic" label="Nome" variant="outlined" size="small"/>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <TextField fullWidth id="outlined-basic" label="Sobrenome" variant="outlined" size="small"/>
+                    <Grid item xs={12} md={4}>
+                        <TextField fullWidth id="outlined-basic" label="Nome" defaultValue={emp.name} variant="outlined" size="small"/>
                     </Grid>
                     <Grid item xs={12} md={4}>
                         <FormControl sx={{ width: "100%"  }} size="small">
                             <InputLabel id="attribute-select-label" >Cargo Atual</InputLabel>
-                            <Select labelId="attribute-select-label" id="attribute-select" value={currentPosition} label="Cargo Atual" onChange={handleChange}>
+                            <Select labelId="attribute-select-label" id="attribute-select" value={emp.jobTitle} label="Cargo Atual" onChange={handleChange}>
                                 <MenuItem value=""> <em>None</em> </MenuItem>
                                 <MenuItem value={0}>Staff/Assistent</MenuItem>
                                 <MenuItem value={1}>Senior</MenuItem>
@@ -92,11 +89,20 @@ export default function Employee({ emps }: InferGetStaticPropsType<typeof getSta
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                        <TextField fullWidth id="outlined-basic" label="País de atuação" variant="outlined" size="small"/>
+                    <Grid item xs={12} md={2}>
+                        <TextField fullWidth id="outlined-basic" label="Genero" defaultValue={emp.gender} variant="outlined" size="small"/>
+                    </Grid>
+                    <Grid item xs={12} md={2}>
+                        <TextField fullWidth id="outlined-basic" label="Status Funcionario" defaultValue={emp.employeeStatus} variant="outlined" size="small"/>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                        <TextField fullWidth id="outlined-basic" label="Office location" variant="outlined" size="small"/>
+                        <TextField fullWidth id="outlined-basic" label="País de atuação" defaultValue={emp.name} variant="outlined" size="small"/>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <TextField fullWidth id="outlined-basic" label="Office location" defaultValue={emp.name} variant="outlined" size="small"/>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <TextField fullWidth id="outlined-basic" label="Utilização" defaultValue={emp.utilization} variant="outlined" size="small"  InputProps={{ inputProps: {  } }}/>
                     </Grid>
                     <Grid item xs={12} md={4}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -124,10 +130,7 @@ export default function Employee({ emps }: InferGetStaticPropsType<typeof getSta
                             />
                         </LocalizationProvider>
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                        <TextField fullWidth id="outlined-basic" label="Utilização" variant="outlined" size="small"  InputProps={{ inputProps: {  } }}/>
-                    </Grid>
-                    <Grid item xs={12} marginTop={2}><Typography variant="h6">Características</Typography></Grid>
+                    <Grid item xs={12} marginTop={1}><Typography variant="h6">Características</Typography></Grid>
                     <Grid item xs={6} md={6}>
                         <FormControl sx={{ width: "100%"  }} size="small">
                             <InputLabel id="attribute-select-label" >Característica</InputLabel>
@@ -153,7 +156,7 @@ export default function Employee({ emps }: InferGetStaticPropsType<typeof getSta
                         <IconButton sx={{ color: red[500] }} aria-label="upload picture" component="span"><HighlightOff /></IconButton >
                         <IconButton sx={{ color: green[500] }} aria-label="upload picture" component="span"><AddBox /></IconButton >
                     </Grid>
-                    <Grid item xs={12} marginTop={2}><Typography variant="h6" >Empresa</Typography></Grid>
+                    <Grid item xs={12} marginTop={1}><Typography variant="h6" >Empresa</Typography></Grid>
                     <Grid item xs={6} md={6}>
                         <TextField fullWidth id="outlined-basic" label="Nome" variant="outlined" size="small"/>
                     </Grid>
@@ -210,4 +213,32 @@ export default function Employee({ emps }: InferGetStaticPropsType<typeof getSta
             </Paper>
         </React.Fragment>
     )
+}
+
+export default Employee
+
+type Params = {
+    params: {
+      id: string
+    }
+}
+
+export async function getStaticPaths() {
+    const res = await fetch('https://performance-tracker-fiap.herokuapp.com/employee-evaluation')
+    const emps: EmpType[] = await res.json()
+  
+    const paths = emps.map((emp) => ({
+      params: { id: emp.id.toString() },
+    }))
+  
+    return { paths, fallback: false }
+}
+
+export async function getStaticProps({ params }: Params ) {
+    const res = await fetch(`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/${params.id}`)
+    const emp: EmpType[] = await res.json()
+
+    console.log(emp)
+
+    return { props: { emp }}
 }

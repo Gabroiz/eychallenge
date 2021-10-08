@@ -1,8 +1,8 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import { Paper, Grid, Typography,  Box, SelectChangeEvent } from '@mui/material';
+import { Paper, Grid, Typography,  Box } from '@mui/material';
 import { DataGrid, GridColDef, GridSelectionModel } from '@mui/x-data-grid';
-import { GetStaticProps, InferGetStaticPropsType } from 'next'
+import { InferGetStaticPropsType } from 'next'
 import Link from 'next/link';
 
 type Emp = {
