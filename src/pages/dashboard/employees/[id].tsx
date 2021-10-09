@@ -11,7 +11,8 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'
+import ErrorPage from 'next/error'
 
 type Emp = {
     emp: EmpType
@@ -33,7 +34,6 @@ type EmpType = {
 
 const Employee = ({ emp }: Emp) => {
     
-    const router = useRouter()
 
     const [status, setStatus] = React.useState('');
     const [attribute, setAttribute] = React.useState('');
@@ -56,6 +56,11 @@ const Employee = ({ emp }: Emp) => {
     }
     const handleClose = () => {
         setOpen(false);
+    }
+
+    const router = useRouter()
+    if (!router.isFallback && !emp?.id) {
+        return <ErrorPage statusCode={404} />
     }
 
     return (
@@ -224,21 +229,35 @@ type Params = {
 }
 
 export async function getStaticPaths() {
-    const res = await fetch('https://performance-tracker-fiap.herokuapp.com/employee-evaluation')
+    
+    const headers = new Headers()
+    headers = headers.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
+    const config = { method: 'GET', headers: headers }
+
+    console.log(config)
+
+    const res = await fetch('https://performance-tracker-fiap.herokuapp.com/employee-evaluation', config)
+
+    console.log(res)
+
     const emps: EmpType[] = await res.json()
-  
+    
+    console.log(emps)
+
     const paths = emps.map((emp) => ({
       params: { id: emp.id.toString() },
     }))
-  
-    return { paths, fallback: false }
+    
+    return { paths, fallback: true }
 }
 
 export async function getStaticProps({ params }: Params ) {
-    const res = await fetch(`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/${params.id}`)
+    const headers = new Headers()
+    headers = headers.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
+    const config = { method: 'GET', headers: headers }
+    
+    const res = await fetch(`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/${params.id}`, config)
     const emp: EmpType[] = await res.json()
-
-    console.log(emp)
 
     return { props: { emp }}
 }

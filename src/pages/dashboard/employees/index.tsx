@@ -15,16 +15,20 @@ type Emp = {
     futureRank: string
   }
   
-  export const getStaticProps = async () => {
-    const res = await fetch('https://performance-tracker-fiap.herokuapp.com/employee-evaluation')
-    const emps: Emp[] = await res.json()
-  
+export const getStaticProps = async () => {
+    const headers = new Headers()
+    headers = headers.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
+    const config = { method: 'GET', headers: headers }
+    
+    const res = await fetch(`https://performance-tracker-fiap.herokuapp.com/employee-evaluation`, config)
+    const emp: Emp[] = await res.json()
+
     return {
-      props: {
-        emps,
-      },
+        props: {
+            emps,
+        },
     }
-  }
+}
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'id', hide: true },
