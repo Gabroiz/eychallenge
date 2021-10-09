@@ -43,32 +43,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function signIn({ email, password }: SingInCredentials) {
     try {
-      const response = await api.post('sessions', {
-        email,
-        password,
-      })
 
-      const { token, refreshToken, permissions, roles } = response.data;
 
-      setCookie(undefined, 'auth.token', token, {
-        maxAge: 60 * 60 * 24 * 30, // 30 dias
-        path: '/'
-      })
+      const response = await api.post(`/oauth/token?grant_type=password&username=${email}&password=${password}`, null)
 
-      setCookie(undefined, 'auth.refreshToken', refreshToken, {
-        maxAge: 60 * 60 * 24 * 30, // 30 dias
-        path: '/'
-      })
+      // const { token, refreshToken, permissions, roles } = response.data;
 
-      setUser({
-        email,
-        permissions,
-        roles
-      });
+      // setCookie(undefined, 'auth.token', token, {
+      //   maxAge: 60 * 60 * 24 * 30, // 30 dias
+      //   path: '/'
+      // })
 
-      api.defaults.headers['Authorization'] = `Bearer ${token}`;
+      // setCookie(undefined, 'auth.refreshToken', refreshToken, {
+      //   maxAge: 60 * 60 * 24 * 30, // 30 dias
+      //   path: '/'
+      // })
 
-      Router.push('/dashboard')
+      // setUser({
+      //   email,
+      //   permissions,
+      //   roles
+      // });
+
+      // api.defaults.headers['Authorization'] = `Bearer ${token}`;
+
+      // Router.push('/dashboard')
       console.log(response.data);
     } catch (err) {
       console.error(err);

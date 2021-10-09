@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react'
+import React, { ReactElement, useEffect, useState, useContext } from 'react'
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,9 +13,11 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { styles } from '../styles/pages/indexStyle';
+import { useForm, Controller } from "react-hook-form";
 
 import { api } from 'services/api'
 import { Password } from '@mui/icons-material';
+import { AuthContext } from 'contexts/AuthContext';
 
 function Copyright(props: any) {
   return (
@@ -34,23 +36,31 @@ const theme = createTheme();
 
 export default function SignIn() {
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+  const { handleSubmit, control } = useForm();
+  const { signIn } = useContext(AuthContext);
 
-    // eslint-disable-next-line no-console
-    api.post(`/oauth/token?grant_type=password&username=${data.get('email')}&password=${data.get('password')}`, null, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Basic d2ViY2xpZW50OmNsaWVudEB3ZWI=",
-        //"Access-Control-Allow-Origin": "*"
-      }
-    }).then(response => {
-      const data = response.data
+  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
 
-      localStorage.setItem('token', data.access_token)
-    })
-  };
+  //   // eslint-disable-next-line no-console
+  //   api.post(`/oauth/token?grant_type=password&username=${data.get('email')}&password=${data.get('password')}`, null, {
+  //     headers: {
+  //       "Content-Type": "application/x-www-form-urlencoded",
+  //       "Authorization": "Basic d2ViY2xpZW50OmNsaWVudEB3ZWI=",
+  //       //"Access-Control-Allow-Origin": "*"
+  //     }
+  //   }).then(response => {
+  //     const data = response.data
+
+  //     localStorage.setItem('token', data.access_token)
+  //   })
+  // };
+
+  function signInSubmit(data: any) {
+    console.log(data)
+    signIn(data)
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -65,30 +75,36 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
+          <Box component="form" onSubmit={handleSubmit(signInSubmit)} noValidate sx={{ mt: 1 }}>
+            <Controller
+              control={control}
               name="email"
-              autoComplete="email"
-              autoFocus
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  value={field.value || ''}
+                  label="Email"
+                  fullWidth
+                  required
+                  type="email"
+                  margin="normal"
+                />
+              )}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
+            <Controller
+              control={control}
               name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  value={field.value || ''}
+                  label="Password"
+                  fullWidth
+                  required
+                  type="password"
+                  margin="normal"
+                />
+              )}
             />
             <Button
               type="submit"
