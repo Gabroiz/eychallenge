@@ -14,6 +14,8 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { styles } from '../styles/pages/indexStyle';
 import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 import { api } from 'services/api'
 import { Password } from '@mui/icons-material';
@@ -35,9 +37,22 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function SignIn() {
-
-  const { handleSubmit, control } = useForm();
   const { signIn } = useContext(AuthContext);
+
+  const schema = yup.object().shape({
+    email: yup.string()
+      .email('O campo email não está no padrão correto')
+      .required('O campo email é obrigatório'),
+    password: yup.string()
+      .min(4, 'O campo senha deve ter no mínimo 4 caracteres')
+      .max(20, 'O campo senha deve ter no máximo 20 caracteres')
+      .required('O campo senha é obrigatório'),
+  });
+
+  const { handleSubmit, control, formState: { errors }, } = useForm({
+    resolver: yupResolver(schema),
+  }
+  );
 
   // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
   //   event.preventDefault();
@@ -64,16 +79,14 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs" sx={styles.container}>
+      <Container component="main" maxWidth="sm" sx={styles.container}>
         <CssBaseline />
         <Box
           sx={styles.box}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
+          <img src={'/Logo.png'} alt="Logo" />
+          <Typography component="h1" variant="h5" sx={styles.title}>
+            Bem vindo ao portal EY
           </Typography>
           <Box component="form" onSubmit={handleSubmit(signInSubmit)} noValidate sx={{ mt: 1 }}>
             <Controller
@@ -83,6 +96,8 @@ export default function SignIn() {
                 <TextField
                   {...field}
                   value={field.value || ''}
+                  error={!!errors.email}
+                  helperText={errors.email ? errors.email?.message : ''}
                   label="Email"
                   fullWidth
                   required
@@ -98,7 +113,9 @@ export default function SignIn() {
                 <TextField
                   {...field}
                   value={field.value || ''}
-                  label="Password"
+                  error={!!errors.password}
+                  helperText={errors.password ? errors.password?.message : ''}
+                  label="Senha"
                   fullWidth
                   required
                   type="password"
@@ -110,25 +127,12 @@ export default function SignIn() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={styles.button}
             >
-              Sign In
+              Acessar
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );
