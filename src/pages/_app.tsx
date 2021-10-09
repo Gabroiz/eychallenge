@@ -1,5 +1,4 @@
 import { AppProps } from 'next/dist/shared/lib/router/router';
-import styles from '../styles/app.module.scss';
 
 import Layout from 'Components/Layout'
 import { EmotionCache } from '@emotion/react';
@@ -26,7 +25,7 @@ function MyApp(props: MyAppProps) {
 
   return (
     <AuthProvider>
-      <div className={styles.container}>
+      <div>
         <main>
           <Head>
             <title>Emplex - EY</title>

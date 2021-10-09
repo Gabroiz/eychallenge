@@ -21,6 +21,8 @@ import { api } from 'services/api'
 import { Password } from '@mui/icons-material';
 import { AuthContext } from 'contexts/AuthContext';
 
+import Image from 'next/Image';
+
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -84,7 +86,7 @@ export default function SignIn() {
         <Box
           sx={styles.box}
         >
-          <img src={'/Logo.png'} alt="Logo" />
+          <Image src= '/Logo.png' alt="Logo" width={75}  height={75} />
           <Typography component="h1" variant="h5" sx={styles.title}>
             Bem vindo ao portal EY
           </Typography>

@@ -26,4 +26,4 @@ export const styles = {
     fontSize: 30,
     marginTop: 2
   }
-} as const
+} as const;
