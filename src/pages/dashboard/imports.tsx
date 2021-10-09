@@ -4,6 +4,8 @@ import { styled } from '@mui/material/styles';
 import { Grid, Typography, Paper, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent} from '@mui/material';
 import { FileCopy } from '@mui/icons-material';
 
+import { styles } from 'Styles/dashboard/importsStyle';
+
 const Input = styled('input')({
     display: 'none',
   });
@@ -19,9 +21,9 @@ export default function Imports() {
         <React.Fragment>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <Paper sx={{ p:2 }}>
+                    <Paper sx={styles.paper}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} marginTop={1}><Typography variant="h6">Importações</Typography></Grid>
+                            <Grid item xs={12}><Typography sx={styles.title} variant="h6">Importações</Typography></Grid>
                             <Grid item xs={6} md={3}>
                                 <FormControl sx={{ width: "100%"  }} size="small">
                                     <InputLabel id="attribute-select-label" >Base de Informações</InputLabel>
@@ -35,8 +37,8 @@ export default function Imports() {
                             </Grid>
                             <Grid item xs={6} md={4}>
                                 <label htmlFor="contained-button-file">
-                                    <Input accept="image/*" id="contained-button-file" multiple type="file" />
-                                    <Button disabled variant="contained" component="span" startIcon={<FileCopy />}>
+                                    <Input accept="image/*" id="contained-button-file" multiple type="file" disabled/>
+                                    <Button  variant="contained" component="span" startIcon={<FileCopy />} disabled>
                                         Importar CSV
                                     </Button>
                                 </label>

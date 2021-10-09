@@ -5,6 +5,8 @@ import { DataGrid, GridColDef, GridSelectionModel } from '@mui/x-data-grid';
 import { InferGetStaticPropsType } from 'next'
 import Link from 'next/link';
 
+import { styles } from 'Styles/dashboard/employees/indexStyle'
+
 type Emp = {
     id: number
     gpn: string
@@ -13,21 +15,6 @@ type Emp = {
     promotion: string
     actualLead: string
     futureRank: string
-  }
-  
-export const getStaticProps = async () => {
-    const headers = new Headers()
-    headers = headers.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
-    const config = { method: 'GET', headers: headers }
-    
-    const res = await fetch(`https://performance-tracker-fiap.herokuapp.com/employee-evaluation`, config)
-    const emp: Emp[] = await res.json()
-
-    return {
-        props: {
-            emps,
-        },
-    }
 }
 
 const columns: GridColDef[] = [
@@ -40,7 +27,30 @@ const columns: GridColDef[] = [
     { field: 'futureRank', headerName: 'Próximo Cargo', flex: 0.2 },
 ];
 
-export default function Employee({ emps }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Employee() {
+    
+    const [emps, setEmps] = React.useState([]);
+
+    React.useEffect(() => {
+        const fetchEmployees = async () => {
+            const headers = new Headers()
+            headers.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
+
+            const config = {
+                method: 'GET',
+                headers: headers
+            }
+
+            const res = await fetch('https://performance-tracker-fiap.herokuapp.com/employee-evaluation', config)
+
+            const emps = await res.json();
+            
+            setEmps(emps)
+        }
+
+        fetchEmployees()
+    }, []);
+
     const gpn = 1
 
     const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
@@ -53,7 +63,7 @@ export default function Employee({ emps }: InferGetStaticPropsType<typeof getSta
         <React.Fragment>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <Paper sx={{ p:2 }}>
+                    <Paper sx={styles.paperDefault}>
                         <Grid container direction="row" justifyContent="space-between" >
                             <Typography component="h2" variant="h6" gutterBottom>Funcionarios</Typography>
                             <Link href={`/dashboard/employees/${encodeURIComponent(selectionModel[0])}`} passHref>
@@ -61,8 +71,8 @@ export default function Employee({ emps }: InferGetStaticPropsType<typeof getSta
                             </Link>
                         </Grid>
                         <Grid item xs={12}>
-                            <Box sx={{ mt:2 }}>
-                                <Box style={{ height: 350, width: '100%' }}>
+                            <Box sx={styles.boxDefault}>
+                                <Box style={styles.boxTable}>
                                     <DataGrid
                                         onSelectionModelChange={(newSelectionModel) => {
                                             setSelectionModel(newSelectionModel);

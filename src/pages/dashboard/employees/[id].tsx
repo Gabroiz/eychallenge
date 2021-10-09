@@ -14,6 +14,8 @@ import DatePicker from '@mui/lab/DatePicker';
 import { useRouter } from 'next/router'
 import ErrorPage from 'next/error'
 
+import { styles } from 'Styles/dashboard/employees/idStyle'
+
 type Emp = {
     emp: EmpType
 }
@@ -34,7 +36,6 @@ type EmpType = {
 
 const Employee = ({ emp }: Emp) => {
     
-
     const [status, setStatus] = React.useState('');
     const [attribute, setAttribute] = React.useState('');
     const [currentPosition, setCurrentPosition] = React.useState('');
@@ -65,7 +66,7 @@ const Employee = ({ emp }: Emp) => {
 
     return (
         <React.Fragment>
-            <Paper sx={{ p:5 }}>  
+            <Paper sx={styles.paperDefault}>  
                 <Grid container spacing={3}>
                     <Grid container item xs={12} spacing={3}>
                         <Grid item xs={6} md={2}>
@@ -82,7 +83,7 @@ const Employee = ({ emp }: Emp) => {
                         <TextField fullWidth id="outlined-basic" label="Nome" defaultValue={emp.name} variant="outlined" size="small"/>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                        <FormControl sx={{ width: "100%"  }} size="small">
+                        <FormControl sx={styles.formControl} size="small">
                             <InputLabel id="attribute-select-label" >Cargo Atual</InputLabel>
                             <Select labelId="attribute-select-label" id="attribute-select" value={emp.jobTitle} label="Cargo Atual" onChange={handleChange}>
                                 <MenuItem value=""> <em>None</em> </MenuItem>
@@ -230,20 +231,13 @@ type Params = {
 
 export async function getStaticPaths() {
     
-    const headers = new Headers()
-    headers = headers.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
-    const config = { method: 'GET', headers: headers }
+    //const headers = new Headers()
+    //headers = headers.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
+    //const config = { method: 'GET', headers: headers }
 
-    console.log(config)
-
-    const res = await fetch('https://performance-tracker-fiap.herokuapp.com/employee-evaluation', config)
-
-    console.log(res)
-
+    const res = await fetch('https://performance-tracker-fiap.herokuapp.com/employee-evaluation')
     const emps: EmpType[] = await res.json()
     
-    console.log(emps)
-
     const paths = emps.map((emp) => ({
       params: { id: emp.id.toString() },
     }))
@@ -252,11 +246,11 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }: Params ) {
-    const headers = new Headers()
-    headers = headers.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
-    const config = { method: 'GET', headers: headers }
+    //const headers = new Headers()
+    //headers = headers.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
+    //const config = { method: 'GET', headers: headers }
     
-    const res = await fetch(`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/${params.id}`, config)
+    const res = await fetch(`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/${params.id}`)
     const emp: EmpType[] = await res.json()
 
     return { props: { emp }}
