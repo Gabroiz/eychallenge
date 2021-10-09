@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { styles } from '../styles/pages/indexStyle';
 
 import { api } from 'services/api'
 import { Password } from '@mui/icons-material';
@@ -32,6 +33,7 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function SignIn() {
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -43,24 +45,19 @@ export default function SignIn() {
         "Authorization": "Basic d2ViY2xpZW50OmNsaWVudEB3ZWI=",
         //"Access-Control-Allow-Origin": "*"
       }
-    }).then( response => {
+    }).then(response => {
       const data = response.data
 
       localStorage.setItem('token', data.access_token)
-    } )
+    })
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" sx={styles.container}>
         <CssBaseline />
         <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
+          sx={styles.box}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />

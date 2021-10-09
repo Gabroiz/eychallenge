@@ -1,8 +1,11 @@
-import axios from 'axios'
+import axios from 'axios';
+import { parseCookies } from 'nookies';
+
+const cookies = parseCookies();
 
 export const api = axios.create({
-
-    baseURL: 'https://performance-tracker-fiap.herokuapp.com'
-
-
+    baseURL: 'https://performance-tracker-fiap.herokuapp.com',
+    headers: {
+        Authorization: `Basic ${cookies['auth.token']}`
+    }
 })

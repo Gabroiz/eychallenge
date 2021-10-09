@@ -6,6 +6,7 @@ import { EmotionCache } from '@emotion/react';
 import { NextPage } from 'next';
 import { ReactElement, ReactNode } from 'react';
 import Head from 'next/head';
+import { AuthProvider } from 'contexts/AuthContext';
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -24,15 +25,17 @@ function MyApp(props: MyAppProps) {
   const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>)
 
   return (
-    <div className={styles.container}>
-      <main>
+    <AuthProvider>
+      <div className={styles.container}>
+        <main>
           <Head>
             <title>Emplex - EY</title>
             <meta name="viewport" content="initial-scale=1, width=device-width" />
           </Head>
           {getLayout(<Component {...pageProps} />)}
-      </main>
-    </div>
+        </main>
+      </div>
+    </AuthProvider>
   )
 }
 
