@@ -3,21 +3,18 @@ import {Doughnut} from 'react-chartjs-2';
 
 const data = {
   labels: [
-    'Red',
-    'Green',
-    'Yellow'
+    'Budget utilizado',
+    'Budget restante',
 ],
 datasets: [{
-  data: [300, 50, 100],
+  data: [300, 50],
   backgroundColor: [
-  '#FF6384',
-  '#36A2EB',
-  '#FFCE56'
+  '#8884d8',
+  '#8884d853',
   ],
   hoverBackgroundColor: [
-  '#FF6384',
-  '#36A2EB',
-  '#FFCE56'
+  '#8884d8',
+  '#8884d853',
   ]
 }]
 };

@@ -1,6 +1,7 @@
 //css
 export const styles = {
   paperDefault: { p:2, height: 350 },
+  paperDown: { p:2, height: 400 },
   chartsPaper: { 
     p:2,
     display: "flex", 

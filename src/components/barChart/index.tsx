@@ -1,69 +1,55 @@
-import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
-import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recharts';
-
-// Generate Sales Data
-function createData(time: string, amount?: number) {
-  return { time, amount };
-}
+import { Box, Paper } from '@mui/material';
+import React, { PureComponent } from 'react';
+import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const data = [
-  createData('00:00', 0),
-  createData('03:00', 300),
-  createData('06:00', 600),
-  createData('09:00', 800),
-  createData('12:00', 1500),
-  createData('15:00', 2000),
-  createData('18:00', 2400),
-  createData('21:00', 2400),
-  createData('24:00', undefined),
+  {
+    name: 'PI',
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
+  },
+  {
+    name: 'Other Advisory',
+    uv: 3000,
+    pv: 1398,
+    amt: 2210,
+  },
+  {
+    name: 'Risk',
+    uv: 2000,
+    pv: 9800,
+    amt: 2290,
+  },
 ];
 
-export default function Chart() {
-  const theme = useTheme();
+export default class Example extends PureComponent {
+  static demoUrl = 'https://codesandbox.io/s/mixed-bar-chart-q4hgc';
 
-  return (
-    <React.Fragment>
-      <ResponsiveContainer>
-        <LineChart
+  render() {
+    return (
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          width={500}
+          height={300}
           data={data}
           margin={{
-            top: 16,
-            right: 16,
-            bottom: 0,
-            left: 24,
+            top: 20,
+            right: 30,
+            left: 20,
+            bottom: 5,
           }}
         >
-          <XAxis
-            dataKey="time"
-            stroke={theme.palette.text.secondary}
-            style={theme.typography.body2}
-          />
-          <YAxis
-            stroke={theme.palette.text.secondary}
-            style={theme.typography.body2}
-          >
-            <Label
-              angle={270}
-              position="left"
-              style={{
-                textAnchor: 'middle',
-                fill: theme.palette.text.primary,
-                ...theme.typography.body1,
-              }}
-            >
-              Sales ($)
-            </Label>
-          </YAxis>
-          <Line
-            isAnimationActive={false}
-            type="monotone"
-            dataKey="amount"
-            stroke={theme.palette.primary.main}
-            dot={false}
-          />
-        </LineChart>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="pv" name="Budget Restante" stackId="a" fill="#8884d8" />
+          <Bar dataKey="amt" name="Budget Utilizado" stackId="a" fill="#8884d853" />
+          <Bar dataKey="uv" name="Salário Médio" fill="#FFCE56" />
+        </BarChart>
       </ResponsiveContainer>
-    </React.Fragment>
-  );
+    );
+  }
 }

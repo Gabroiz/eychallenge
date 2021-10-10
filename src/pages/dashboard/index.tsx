@@ -3,12 +3,12 @@ import Layout from 'Components/Layout'
 import { Box, Typography, Grid, Paper } from '@mui/material';
 import PieChart from 'Components/PieChart';
 import BarChart from 'Components/barChart';
-import EmpTable from 'Components/EmpTable';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
 import { styles } from 'Styles/dashboard/indexStyle';
 import Emp from 'Components/Emp';
+import LastPromoted from 'Components/LastPromoted';
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -53,20 +53,18 @@ export default function Dashboard() {
     <Grid container spacing={2}>
       <Grid item xs={12} sm={12} lg={4}>
         <Paper sx={styles.chartsPaper} variant="outlined" square>
-          <Box sx={styles.box}>
-              <Box sx={styles.chartBox} >
-                <PieChart />
-              </Box>
-          </Box>
+            <Box sx={styles.chartBox} >
+              <PieChart />
+            </Box>
         </Paper>
       </Grid>
       <Grid item xs={12} sm={12} lg={8}>
-        <Paper sx={styles.paperDefault}>
+        <Paper sx={styles.paperDefault} variant="outlined" square>
           <BarChart />
         </Paper>
       </Grid>
       <Grid item xs={12} sm={12} lg={4} >
-        <Paper sx={styles.paperDefault} variant="outlined" square>
+        <Paper sx={styles.paperDown} variant="outlined" square>
               <Box sx={styles.box}>
                 <Box sx={styles.panelBox}>
                   <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
@@ -75,7 +73,7 @@ export default function Dashboard() {
                   </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
-                  
+                  <LastPromoted pageRows={6} headerHeight={37} rowHeight={31}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                   
@@ -84,7 +82,7 @@ export default function Dashboard() {
         </Paper>
       </Grid>
       <Grid item xs={12} sm={12} lg={8}>
-          <Emp/>
+          <Emp pageRows={6} headerHeight={37} rowHeight={31} heightPaper={400}/>
       </Grid>
     </Grid>
   )

@@ -1,9 +1,7 @@
 import * as React from 'react';
-import Layout from 'Components/Layout'
 import Button from '@mui/material/Button';
 import { Paper, Grid, Typography,  Box, ClickAwayListener } from '@mui/material';
 import { DataGrid, GridColDef, GridSelectionModel } from '@mui/x-data-grid';
-import { InferGetStaticPropsType } from 'next'
 import Link from 'next/link';
 
 import { styles } from './indexStyle'
@@ -37,7 +35,14 @@ const useStyles = makeStyles({
     }
 });
 
-export default function Emp() {
+type Props = {
+    pageRows: number;
+    headerHeight: number;
+    rowHeight: number;
+    heightPaper: number;
+};
+
+const Emp: React.FC<Props> = ({pageRows, headerHeight, rowHeight, heightPaper}) => {
     
     const classes = useStyles();
     const [emps, setEmps] = React.useState([]);
@@ -68,12 +73,18 @@ export default function Emp() {
     return (
         <Grid container spacing={1}>
             <Grid item xs={12}>
-                <Paper sx={styles.paperDefault}>
+                <Paper sx={{ p: 2, height: heightPaper}} variant="outlined" square>
                     <Grid container direction="row" justifyContent="space-between" >
                         <Typography component="h2" variant="h6" gutterBottom>Funcionarios</Typography>
-                        <Link href={`/dashboard/employees/${encodeURIComponent(selectionModel[0])}`} passHref>
-                            <Button disabled={btnStatus} color="secondary" variant="contained">Exibir Funcionário</Button>
-                        </Link>
+                        <Box>
+                            <Link href={`/dashboard/employees/${encodeURIComponent(selectionModel[0])}`} passHref>
+                                <Button sx={{ ml:1, mr:1 }} disabled={btnStatus} color="secondary" variant="contained">Exibir Funcionário</Button>
+                            </Link>
+                            <Link href={`/dashboard/employees/${encodeURIComponent(selectionModel[0])}`} passHref>
+                                <Button sx={{ ml:1, mr:1 }} disabled={btnStatus} color="secondary" variant="contained">Simular Promoção</Button>
+                            </Link>
+                        </Box>
+                        
                     </Grid>
                     <Grid item xs={12}>
                         <Box sx={styles.boxDefault}>
@@ -92,10 +103,10 @@ export default function Emp() {
                                             if (newSelectionModel.length < 1) { handleClick(true) } 
                                             else { handleClick(false)}
                                         }}
-                                        pageSize={5}
-                                        rowsPerPageOptions={[5]}
-                                        headerHeight={37}
-                                        rowHeight={31}
+                                        pageSize={pageRows}
+                                        rowsPerPageOptions={[pageRows]}
+                                        headerHeight={headerHeight}
+                                        rowHeight={rowHeight}
                                         autoHeight={true}
                                         selectionModel={selectionModel}
                                         rows={emps}
@@ -110,3 +121,5 @@ export default function Emp() {
         </Grid>
     )
 }
+
+export default Emp
