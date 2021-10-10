@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Layout from 'Components/Layout'
 import Button from '@mui/material/Button';
 import { Paper, IconButton, Grid, TextField, Select, MenuItem, InputLabel, SelectChangeEvent, FormControl, Box, Dialog, AppBar, Toolbar, Typography, Container } from '@mui/material';
 import { AddBox, HighlightOff} from '@mui/icons-material';
@@ -255,3 +256,9 @@ export async function getStaticProps({ params }: Params ) {
 
     return { props: { emp }}
 }
+
+Employee.getLayout = function getLayout(page: React.ReactElement) {
+    return (
+      <Layout>{page}</Layout>
+    )
+  }

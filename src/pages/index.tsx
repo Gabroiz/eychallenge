@@ -139,9 +139,3 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
-
-SignIn.getLayout = function getLayout(page: ReactElement) {
-  return (
-    <React.Fragment>{page}</React.Fragment>
-  )
-}

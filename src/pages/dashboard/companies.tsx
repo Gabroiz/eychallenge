@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Layout from 'Components/Layout'
 import { Paper, Grid, Typography, Box } from '@mui/material';
 import CompTable from 'Components/CompTable';
 
@@ -20,3 +21,9 @@ export default function Employee() {
         </React.Fragment>
     )
 }
+
+Employee.getLayout = function getLayout(page: React.ReactElement) {
+    return (
+      <Layout>{page}</Layout>
+    )
+  }

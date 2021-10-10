@@ -1,11 +1,14 @@
 import * as React from 'react';
+import Layout from 'Components/Layout'
 import { Box, Typography, Grid, Paper } from '@mui/material';
 import PieChart from 'Components/PieChart';
+import BarChart from 'Components/barChart';
 import EmpTable from 'Components/EmpTable';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
 import { styles } from 'Styles/dashboard/indexStyle';
+import Emp from 'Components/Emp';
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -24,7 +27,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 2 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -47,42 +50,48 @@ export default function Dashboard() {
   };
 
   return (
-    <React.Fragment>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
-          <Paper sx={styles.chartsPaper} variant="outlined" square>
-            <Box sx={styles.box}>
-              <Box sx={styles.panelBox}>
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-                  <Tab label="Budget" {...a11yProps(0)} />
-                  <Tab label="Promoções" {...a11yProps(1)} />
-                </Tabs>
+    <Grid container spacing={2}>
+      <Grid item xs={12} sm={12} lg={4}>
+        <Paper sx={styles.chartsPaper} variant="outlined" square>
+          <Box sx={styles.box}>
+              <Box sx={styles.chartBox} >
+                <PieChart />
               </Box>
-              <TabPanel value={value} index={0}>
-                <Box sx={styles.chartBox} >
-                  <PieChart />
-                </Box>
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                Item Two
-              </TabPanel>
-            </Box>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={8}>
-          <Paper sx={styles.paperDefault}>
-            <Typography component="h2" variant="h6" gutterBottom>Funcionarios</Typography>
-            <EmpTable/>
-
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper sx={styles.paperDefault} variant="outlined" square></Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper sx={styles.paperDefault} variant="outlined" square></Paper>
-        </Grid>
+          </Box>
+        </Paper>
       </Grid>
-    </React.Fragment>
+      <Grid item xs={12} sm={12} lg={8}>
+        <Paper sx={styles.paperDefault}>
+          <BarChart />
+        </Paper>
+      </Grid>
+      <Grid item xs={12} sm={12} lg={4} >
+        <Paper sx={styles.paperDefault} variant="outlined" square>
+              <Box sx={styles.box}>
+                <Box sx={styles.panelBox}>
+                  <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
+                    <Tab label="Promoções realizadas" {...a11yProps(0)} />
+                    <Tab label="Budget utilizado" {...a11yProps(1)} />
+                  </Tabs>
+                </Box>
+                <TabPanel value={value} index={0}>
+                  
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                  
+                </TabPanel>
+              </Box>
+        </Paper>
+      </Grid>
+      <Grid item xs={12} sm={12} lg={8}>
+          <Emp/>
+      </Grid>
+    </Grid>
+  )
+}
+
+Dashboard.getLayout = function getLayout(page: React.ReactElement) {
+  return (
+    <Layout>{page}</Layout>
   )
 }

@@ -1,6 +1,5 @@
+import * as React from 'react';
 import { AppProps } from 'next/dist/shared/lib/router/router';
-
-import Layout from 'Components/Layout'
 import { EmotionCache } from '@emotion/react';
 import { NextPage } from 'next';
 import { ReactElement, ReactNode } from 'react';
@@ -21,8 +20,8 @@ function MyApp(props: MyAppProps) {
   const { Component, pageProps } = props;
 
   // Use the layout defined at the page level, if available
-  const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>)
-
+  const getLayout = Component.getLayout ?? ((page) => <React.Fragment>{page}</React.Fragment>)
+  
   return (
     <AuthProvider>
       <div>
