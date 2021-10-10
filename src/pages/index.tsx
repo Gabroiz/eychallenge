@@ -56,24 +56,6 @@ export default function SignIn() {
   }
   );
 
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-
-  //   // eslint-disable-next-line no-console
-  //   api.post(`/oauth/token?grant_type=password&username=${data.get('email')}&password=${data.get('password')}`, null, {
-  //     headers: {
-  //       "Content-Type": "application/x-www-form-urlencoded",
-  //       "Authorization": "Basic d2ViY2xpZW50OmNsaWVudEB3ZWI=",
-  //       //"Access-Control-Allow-Origin": "*"
-  //     }
-  //   }).then(response => {
-  //     const data = response.data
-
-  //     localStorage.setItem('token', data.access_token)
-  //   })
-  // };
-
   function signInSubmit(data: any) {
     console.log(data)
     signIn(data)
@@ -86,7 +68,7 @@ export default function SignIn() {
         <Box
           sx={styles.box}
         >
-          <Image src= '/Logo.png' alt="Logo" width={75}  height={75} />
+          <Image src='/Logo.png' alt="Logo" width={75} height={75} />
           <Typography component="h1" variant="h5" sx={styles.title}>
             Bem vindo ao portal EY
           </Typography>

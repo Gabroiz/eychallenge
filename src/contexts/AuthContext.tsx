@@ -5,8 +5,7 @@ import { api } from "../services/api";
 
 type User = {
   email: string;
-  permissions: string[];
-  roles: string[];
+  name: string;
 }
 
 type SingInCredentials = {
@@ -29,46 +28,54 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>();
   const isAuthenticated = !!user;
 
-  useEffect(() => {
-    const { 'auth.token': token } = parseCookies()
+  // useEffect(() => {
+  //   const { 'auth.token': token } = parseCookies()
 
-    if (token) {
-      api.get('/me').then((response) => {
-        const { email, permissions, roles } = response.data
+  //   if (token) {
+  //     api.get('/me').then((response) => {
+  //       const { email, permissions, roles } = response.data
 
-        setUser({ email, permissions, roles })
-      })
-    }
-  }, [])
+  //       setUser({ email, name })
+  //     })
+  //   }
+  // }, [])
 
   async function signIn({ email, password }: SingInCredentials) {
     try {
 
 
-      const response = await api.post(`/oauth/token?grant_type=password&username=${email}&password=${password}`, null)
+      const response = await api.post(`/oauth/token?grant_type=password&username=${email}&password=${password}`, null, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Basic d2ViY2xpZW50OmNsaWVudEB3ZWI=",
+          "Access-Control-Allow-Origin": "*"
+        }
+      }).then(response => {
+        const data = response.data
+        console.log(data);
 
-      // const { token, refreshToken, permissions, roles } = response.data;
+        const { access_token, refresh_token, user_email, user_name } = response.data;
 
-      // setCookie(undefined, 'auth.token', token, {
-      //   maxAge: 60 * 60 * 24 * 30, // 30 dias
-      //   path: '/'
-      // })
+        setCookie(undefined, 'auth.token', access_token, {
+          maxAge: 60 * 60 * 24 * 30, // 30 dias
+          path: '/'
+        })
 
-      // setCookie(undefined, 'auth.refreshToken', refreshToken, {
-      //   maxAge: 60 * 60 * 24 * 30, // 30 dias
-      //   path: '/'
-      // })
+        setCookie(undefined, 'auth.refreshToken', refresh_token, {
+          maxAge: 60 * 60 * 24 * 30, // 30 dias
+          path: '/'
+        })
 
-      // setUser({
-      //   email,
-      //   permissions,
-      //   roles
-      // });
+        setUser({
+          email: user_email,
+          name: user_name
+        });
 
-      // api.defaults.headers['Authorization'] = `Bearer ${token}`;
+        api.defaults.headers['Authorization'] = `Bearer ${access_token}`;
 
-      // Router.push('/dashboard')
-      console.log(response.data);
+        Router.push('/dashboard')
+      })
+
     } catch (err) {
       console.error(err);
     }
