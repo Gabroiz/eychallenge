@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 import { styles } from './indexStyle'
 import { makeStyles } from '@mui/styles';
+import { GetServerSideProps } from 'next';
 
 type Emp = {
     id: number
@@ -30,32 +31,39 @@ const useStyles = makeStyles({
 });
 
 type Props = {
+    rows: Emp[];
     pageRows: number;
     headerHeight: number;
     rowHeight: number;
 };
 
-const LastPromoted: React.FC<Props> = ({pageRows, headerHeight, rowHeight}) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
     
+    let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/history/promotions`
+    const headers = new Headers()
+    headers.append('Authorization', `Bearer ${context.req.cookies['auth.token']}`)
+    const config = {
+        method: 'GET',
+        headers: headers
+    }
+
+    const res = await fetch(url,config)
+    const emps: Emp[] = await res.json()
+  
+    return {
+        props: {
+            emps,
+        },
+    }
+}
+
+const LastPromoted: React.FC<Props> = (props) => {
+    
+    const { pageRows, headerHeight, rowHeight,  rows} = props
+
     const classes = useStyles();
-    const [emps, setEmps] = React.useState([]);
-    React.useEffect(() => {
-        const fetchEmployees = async () => {
-            const headers = new Headers()
-            headers.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
-            const config = {
-                method: 'GET',
-                headers: headers
-            }
-            const res = await fetch('https://performance-tracker-fiap.herokuapp.com/employee-evaluation', config)
-            const emps = await res.json();
-            setEmps(emps)
-        }
-        fetchEmployees()
-    }, []);
 
     const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
-
     const [btnStatus, setBtnStatus] = React.useState(true);
 
     const handleClick = (value: boolean) => {
@@ -86,7 +94,7 @@ const LastPromoted: React.FC<Props> = ({pageRows, headerHeight, rowHeight}) => {
                         rowHeight={rowHeight}
                         autoHeight={true}
                         selectionModel={selectionModel}
-                        rows={emps}
+                        rows={rows}
                         columns={columns}
                         />
                 </ClickAwayListener>
