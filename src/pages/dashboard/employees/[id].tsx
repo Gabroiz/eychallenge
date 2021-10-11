@@ -16,6 +16,11 @@ import { useRouter } from 'next/router'
 import ErrorPage from 'next/error'
 
 import { styles } from 'Styles/dashboard/employees/idStyle'
+import { GetServerSideProps } from 'next';
+import Simulator from 'Components/Simulator';
+
+
+import { parseCookies } from 'nookies';
 
 type Emp = {
     emp: EmpType
@@ -33,6 +38,42 @@ type EmpType = {
     promotion: string
     actualLead: string
     futureRank: string
+}
+
+
+type Params = {
+    params: {
+      id: string
+    }
+}
+
+const cookies = parseCookies();
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    //const cookies = parseCookies();
+
+    //console.log(cookies['auth.token'])
+
+    //const  { id } = context.params;
+    //console.log(context.params)
+
+    let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/4004`
+    const headers = new Headers()
+    headers.append('Authorization', `Bearer ${context.req.cookies['auth.token']}`)
+
+    const config = {
+        method: 'GET',
+        headers: headers
+    }
+
+    const res = await fetch(url,config)
+    const emp: EmpType[] = await res.json()
+  
+    return {
+        props: {
+            emp,
+        },
+    }
 }
 
 const Employee = ({ emp }: Emp) => {
@@ -59,9 +100,10 @@ const Employee = ({ emp }: Emp) => {
     const handleClose = () => {
         setOpen(false);
     }
+    
 
     const router = useRouter()
-    if (!router.isFallback && !emp?.id) {
+    if ( !emp?.id) {
         return <ErrorPage statusCode={404} />
     }
 
@@ -86,7 +128,7 @@ const Employee = ({ emp }: Emp) => {
                     <Grid item xs={12} md={4}>
                         <FormControl sx={styles.formControl} size="small">
                             <InputLabel id="attribute-select-label" >Cargo Atual</InputLabel>
-                            <Select labelId="attribute-select-label" id="attribute-select" value={emp.jobTitle} label="Cargo Atual" onChange={handleChange}>
+                            <Select labelId="attribute-select-label" id="attribute-select" defaultValue={emp.jobTitle} value={currentPosition} label="Cargo Atual" onChange={handleChange}>
                                 <MenuItem value=""> <em>None</em> </MenuItem>
                                 <MenuItem value={0}>Staff/Assistent</MenuItem>
                                 <MenuItem value={1}>Senior</MenuItem>
@@ -178,10 +220,7 @@ const Employee = ({ emp }: Emp) => {
                     <Grid item xs={12} md={12} marginTop={2}>
                         <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
                             <Button color="secondary" variant="contained" onClick={handleClickOpen}>Simular Promoção</Button>
-                            <Dialog
-                                fullScreen
-                                open={open}
-                                onClose={handleClose}>
+                            <Dialog fullScreen open={open} onClose={handleClose}>
                                 <AppBar sx={{ position: 'relative' }}>
                                 <Toolbar>
                                     <IconButton
@@ -215,7 +254,6 @@ const Employee = ({ emp }: Emp) => {
                             </Dialog>
                         </Box>
                     </Grid>
-                        
                 </Grid>
             </Paper>
         </React.Fragment>
@@ -224,41 +262,8 @@ const Employee = ({ emp }: Emp) => {
 
 export default Employee
 
-type Params = {
-    params: {
-      id: string
-    }
-}
-
-export async function getStaticPaths() {
-    
-    //const headers = new Headers()
-    //headers = headers.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
-    //const config = { method: 'GET', headers: headers }
-
-    const res = await fetch('https://performance-tracker-fiap.herokuapp.com/employee-evaluation')
-    const emps: EmpType[] = await res.json()
-    
-    const paths = emps.map((emp) => ({
-      params: { id: emp.id.toString() },
-    }))
-    
-    return { paths, fallback: true }
-}
-
-export async function getStaticProps({ params }: Params ) {
-    //const headers = new Headers()
-    //headers = headers.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
-    //const config = { method: 'GET', headers: headers }
-    
-    const res = await fetch(`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/${params.id}`)
-    const emp: EmpType[] = await res.json()
-
-    return { props: { emp }}
-}
-
 Employee.getLayout = function getLayout(page: React.ReactElement) {
     return (
       <Layout>{page}</Layout>
     )
-  }
+}

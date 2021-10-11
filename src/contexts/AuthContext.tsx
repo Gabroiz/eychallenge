@@ -26,14 +26,20 @@ export const AuthContext = createContext({} as AuthContextData)
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>();
-  const isAuthenticated = !!user;
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // useEffect(() => {
   //   const { 'auth.token': token } = parseCookies()
 
   //   if (token) {
-  //     api.get('/me').then((response) => {
-  //       const { email, permissions, roles } = response.data
+  //     api.post(`/oauth/token?grant_type=password&username=${email}&password=${password}`, null, {
+  //       headers: {
+  //         "Content-Type": "application/x-www-form-urlencoded",
+  //         "Authorization": "Basic d2ViY2xpZW50OmNsaWVudEB3ZWI=",
+  //         "Access-Control-Allow-Origin": "*"
+  //       }
+  //     }).then((response) => {
+  //       const { email, name } = response.data
 
   //       setUser({ email, name })
   //     })
@@ -42,8 +48,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function signIn({ email, password }: SingInCredentials) {
     try {
-
-
       const response = await api.post(`/oauth/token?grant_type=password&username=${email}&password=${password}`, null, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -72,20 +76,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
         });
 
         api.defaults.headers['Authorization'] = `Bearer ${access_token}`;
+        setIsAuthenticated(true);
 
         Router.push('/dashboard')
       })
-
     } catch (err) {
       console.error(err);
     }
   }
 
   function singOut() {
-
-  }
-
-  function forgotPassword() {
 
   }
 

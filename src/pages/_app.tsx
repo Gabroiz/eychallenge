@@ -5,6 +5,7 @@ import { NextPage } from 'next';
 import { ReactElement, ReactNode } from 'react';
 import Head from 'next/head';
 import { AuthProvider } from 'contexts/AuthContext';
+import { RouteGuard } from 'Components/RouteGuard';
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -21,7 +22,7 @@ function MyApp(props: MyAppProps) {
 
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => <React.Fragment>{page}</React.Fragment>)
-  
+
   return (
     <AuthProvider>
       <div>
@@ -30,7 +31,9 @@ function MyApp(props: MyAppProps) {
             <title>Emplex - EY</title>
             <meta name="viewport" content="initial-scale=1, width=device-width" />
           </Head>
+          {/* <RouteGuard> */}
           {getLayout(<Component {...pageProps} />)}
+          {/* </RouteGuard> */}
         </main>
       </div>
     </AuthProvider>

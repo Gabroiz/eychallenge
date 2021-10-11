@@ -9,6 +9,8 @@ import Tab from '@mui/material/Tab';
 import { styles } from 'Styles/dashboard/indexStyle';
 import Emp from 'Components/Emp';
 import LastPromoted from 'Components/LastPromoted';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -42,7 +44,38 @@ function a11yProps(index: number) {
   };
 }
 
-export default function Dashboard() {
+type EmpType = {
+    id: number
+    gpn: string
+    name: string
+    jobTitle: string
+    promotion: string
+    actualLead: string
+    futureRank: string
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation`
+    
+    const headers = new Headers()
+    headers.append('Authorization', `Bearer ${context.req.cookies['auth.token']}`)
+    const config = {
+        method: 'GET',
+        headers: headers
+    }
+
+    const res = await fetch(url,config)
+    const emps: EmpType[] = await res.json()
+  
+    return {
+        props: {
+            emps,
+        },
+    }
+}
+
+export default function Dashboard({ emps }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -73,7 +106,7 @@ export default function Dashboard() {
                   </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
-                  <LastPromoted pageRows={6} headerHeight={37} rowHeight={31}/>
+                  <LastPromoted rows={emps} pageRows={6} headerHeight={37} rowHeight={31}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                   
@@ -82,7 +115,7 @@ export default function Dashboard() {
         </Paper>
       </Grid>
       <Grid item xs={12} sm={12} lg={8}>
-          <Emp pageRows={6} headerHeight={37} rowHeight={31} heightPaper={400}/>
+        <Emp rows={emps} pageRows={6} headerHeight={37} rowHeight={31} heightPaper={400}/>
       </Grid>
     </Grid>
   )

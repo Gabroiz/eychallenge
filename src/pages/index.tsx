@@ -65,9 +65,7 @@ export default function SignIn() {
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="sm" sx={styles.container}>
         <CssBaseline />
-        <Box
-          sx={styles.box}
-        >
+        <Box sx={styles.box} >
           <Image src='/Logo.png' alt="Logo" width={75} height={75} />
           <Typography component="h1" variant="h5" sx={styles.title}>
             Bem vindo ao portal EY

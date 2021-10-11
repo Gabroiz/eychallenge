@@ -5,21 +5,21 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Resp
 const data = [
   {
     name: 'PI',
-    uv: 4000,
+    uv: 3500,
     pv: 2400,
-    amt: 2400,
+    amt: 5000,
   },
   {
     name: 'Other Advisory',
     uv: 3000,
-    pv: 1398,
-    amt: 2210,
+    pv: 1200,
+    amt: 5000,
   },
   {
     name: 'Risk',
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
+    uv: 4000,
+    pv: 1900,
+    amt: 5000,
   },
 ];
 
