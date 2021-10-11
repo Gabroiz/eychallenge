@@ -11,6 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
+    "@hookform/resolvers": "^2.8.2",
     "@mui/core": "^5.0.0-alpha.49",
     "@mui/icons-material": "^5.0.1",
     "@mui/lab": "^5.0.0-alpha.49",
@@ -21,11 +22,17 @@
     "chart.js": "^3.5.1",
     "date-fns": "^2.25.0",
     "next": "11.1.2",
+    "next-auth": "^3.29.0",
+    "nookies": "^2.5.2",
     "react": "17.0.2",
     "react-chartjs-2": "^3.0.5",
     "react-dom": "17.0.2",
+    "react-dropzone": "^11.4.2",
+    "react-hook-form": "^7.17.2",
     "react-icons": "^4.2.0",
-    "sass": "^1.42.1"
+    "recharts": "^2.1.4",
+    "sass": "^1.42.1",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@types/react": "17.0.24",

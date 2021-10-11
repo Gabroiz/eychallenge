@@ -1,25 +1,89 @@
 import * as React from 'react';
+import Layout from 'Components/Layout'
 import Button from '@mui/material/Button';
 import { Paper, IconButton, Grid, TextField, Select, MenuItem, InputLabel, SelectChangeEvent, FormControl, Box, Dialog, AppBar, Toolbar, Typography, Container } from '@mui/material';
 import { AddBox, HighlightOff} from '@mui/icons-material';
 import { green, red } from '@mui/material/colors';
 import CloseIcon from '@mui/icons-material/Close';
 
+import { format, parse } from 'date-fns'
+
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
-import { useRouter } from 'next/router';
 
-export default function Employee() {
-    const router = useRouter()
-    const { id } = router.query
+import { useRouter } from 'next/router'
+import ErrorPage from 'next/error'
 
+import { styles } from 'Styles/dashboard/employees/idStyle'
+import { GetServerSideProps } from 'next';
+import Simulator from 'Components/Simulator';
+
+
+import { parseCookies } from 'nookies';
+
+type Emp = {
+    emp: EmpType
+}
+
+type EmpType = {
+    id: number
+    gpn: string
+    name: string
+    employeeStatus: string
+    gender: string
+    jobTitle: string
+    hiringDate: string
+    utilization: number
+    promotion: string
+    actualLead: string
+    futureRank: string
+}
+
+
+type Params = {
+    params: {
+      id: string
+    }
+}
+
+const cookies = parseCookies();
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    //const cookies = parseCookies();
+
+    //console.log(cookies['auth.token'])
+
+    //const  { id } = context.params;
+    //console.log(context.params)
+
+    let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/4004`
+    const headers = new Headers()
+    headers.append('Authorization', `Bearer ${context.req.cookies['auth.token']}`)
+
+    const config = {
+        method: 'GET',
+        headers: headers
+    }
+
+    const res = await fetch(url,config)
+    const emp: EmpType[] = await res.json()
+  
+    return {
+        props: {
+            emp,
+        },
+    }
+}
+
+const Employee = ({ emp }: Emp) => {
+    
     const [status, setStatus] = React.useState('');
     const [attribute, setAttribute] = React.useState('');
     const [currentPosition, setCurrentPosition] = React.useState('');
     const [business, setBusiness] = React.useState('');
 
-    const [hiringDate, setHiringDate] = React.useState<Date | null>(new Date());
+    const [hiringDate, setHiringDate] = React.useState<Date | null>(parse(emp.hiringDate, 'yyyy-dd-MM', new Date()));
     const [lastPromotionDate, setLastPromotionDate] = React.useState<Date | null>(new Date());
     
     const handleChange = (event: SelectChangeEvent) => {
@@ -36,29 +100,35 @@ export default function Employee() {
     const handleClose = () => {
         setOpen(false);
     }
+    
+
+    const router = useRouter()
+    if ( !emp?.id) {
+        return <ErrorPage statusCode={404} />
+    }
 
     return (
         <React.Fragment>
-            <Paper sx={{ p:5 }}>  
-                <Grid container spacing={2}>
+            <Paper sx={styles.paperDefault}>  
+                <Grid container spacing={3}>
                     <Grid container item xs={12} spacing={3}>
-                        <Grid item xs={6} md={3}>
-                            <TextField fullWidth id="outlined-basic" label="GPN" defaultValue={id} variant="filled" size="small" InputProps={{readOnly: true}}/>
+                        <Grid item xs={6} md={2}>
+                            <TextField fullWidth id="outlined-basic" label="GPN" defaultValue={emp.gpn} variant="filled" size="small" InputProps={{readOnly: true}}/>
                         </Grid>
-                        <Grid item xs={6} md={3}>
-                            <TextField fullWidth id="outlined-basic" label="Situação (Lead)" defaultValue="Promotion" variant="filled" size="small" InputProps={{readOnly: true}}/>
+                        <Grid item xs={6} md={2}>
+                            <TextField fullWidth id="outlined-basic" label="Situação de Promoção" defaultValue={emp.promotion} variant="filled" size="small" InputProps={{readOnly: true}}/>
                         </Grid>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <TextField fullWidth id="outlined-basic" label="Nome" variant="outlined" size="small"/>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <TextField fullWidth id="outlined-basic" label="Sobrenome" variant="outlined" size="small"/>
+                        <Grid item xs={6} md={2}>
+                            <TextField fullWidth id="outlined-basic" label="Lead atual" defaultValue={emp.actualLead} variant="filled" size="small" InputProps={{readOnly: true}}/>
+                        </Grid>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                        <FormControl sx={{ width: "100%"  }} size="small">
+                        <TextField fullWidth id="outlined-basic" label="Nome" defaultValue={emp.name} variant="outlined" size="small"/>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <FormControl sx={styles.formControl} size="small">
                             <InputLabel id="attribute-select-label" >Cargo Atual</InputLabel>
-                            <Select labelId="attribute-select-label" id="attribute-select" value={currentPosition} label="Cargo Atual" onChange={handleChange}>
+                            <Select labelId="attribute-select-label" id="attribute-select" defaultValue={emp.jobTitle} value={currentPosition} label="Cargo Atual" onChange={handleChange}>
                                 <MenuItem value=""> <em>None</em> </MenuItem>
                                 <MenuItem value={0}>Staff/Assistent</MenuItem>
                                 <MenuItem value={1}>Senior</MenuItem>
@@ -68,11 +138,20 @@ export default function Employee() {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                        <TextField fullWidth id="outlined-basic" label="País de atuação" variant="outlined" size="small"/>
+                    <Grid item xs={12} md={2}>
+                        <TextField fullWidth id="outlined-basic" label="Genero" defaultValue={emp.gender} variant="outlined" size="small"/>
+                    </Grid>
+                    <Grid item xs={12} md={2}>
+                        <TextField fullWidth id="outlined-basic" label="Status Funcionario" defaultValue={emp.employeeStatus} variant="outlined" size="small"/>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                        <TextField fullWidth id="outlined-basic" label="Office location" variant="outlined" size="small"/>
+                        <TextField fullWidth id="outlined-basic" label="País de atuação" defaultValue={emp.name} variant="outlined" size="small"/>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <TextField fullWidth id="outlined-basic" label="Office location" defaultValue={emp.name} variant="outlined" size="small"/>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <TextField fullWidth id="outlined-basic" label="Utilização" defaultValue={emp.utilization} variant="outlined" size="small"  InputProps={{ inputProps: {  } }}/>
                     </Grid>
                     <Grid item xs={12} md={4}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -100,10 +179,7 @@ export default function Employee() {
                             />
                         </LocalizationProvider>
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                        <TextField fullWidth id="outlined-basic" label="Utilização" variant="outlined" size="small"  InputProps={{ inputProps: {  } }}/>
-                    </Grid>
-                    <Grid item xs={12} marginTop={2}><Typography variant="h6">Características</Typography></Grid>
+                    <Grid item xs={12} marginTop={1}><Typography variant="h6">Características</Typography></Grid>
                     <Grid item xs={6} md={6}>
                         <FormControl sx={{ width: "100%"  }} size="small">
                             <InputLabel id="attribute-select-label" >Característica</InputLabel>
@@ -129,7 +205,7 @@ export default function Employee() {
                         <IconButton sx={{ color: red[500] }} aria-label="upload picture" component="span"><HighlightOff /></IconButton >
                         <IconButton sx={{ color: green[500] }} aria-label="upload picture" component="span"><AddBox /></IconButton >
                     </Grid>
-                    <Grid item xs={12} marginTop={2}><Typography variant="h6" >Empresa</Typography></Grid>
+                    <Grid item xs={12} marginTop={1}><Typography variant="h6" >Empresa</Typography></Grid>
                     <Grid item xs={6} md={6}>
                         <TextField fullWidth id="outlined-basic" label="Nome" variant="outlined" size="small"/>
                     </Grid>
@@ -144,10 +220,7 @@ export default function Employee() {
                     <Grid item xs={12} md={12} marginTop={2}>
                         <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
                             <Button color="secondary" variant="contained" onClick={handleClickOpen}>Simular Promoção</Button>
-                            <Dialog
-                                fullScreen
-                                open={open}
-                                onClose={handleClose}>
+                            <Dialog fullScreen open={open} onClose={handleClose}>
                                 <AppBar sx={{ position: 'relative' }}>
                                 <Toolbar>
                                     <IconButton
@@ -158,7 +231,7 @@ export default function Employee() {
                                     <CloseIcon />
                                     </IconButton>
                                     <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                                        Simulação
+                                        Simulação de Promoção
                                     </Typography>
                                     <Button autoFocus color="secondary" variant="contained" onClick={handleClose}>
                                         Promover
@@ -181,9 +254,16 @@ export default function Employee() {
                             </Dialog>
                         </Box>
                     </Grid>
-                                                
                 </Grid>
             </Paper>
         </React.Fragment>
-                            )
+    )
+}
+
+export default Employee
+
+Employee.getLayout = function getLayout(page: React.ReactElement) {
+    return (
+      <Layout>{page}</Layout>
+    )
 }

@@ -1,46 +1,52 @@
 import * as React from 'react';
+import Layout from 'Components/Layout'
 import Button from '@mui/material/Button';
 import { Paper, Grid, Typography,  Box } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridSelectionModel } from '@mui/x-data-grid';
+import { GetServerSideProps, InferGetStaticPropsType } from 'next'
 import Link from 'next/link';
 
-const columns: GridColDef[] = [
-    { field: 'id', headerName: 'GPN', width: 100 },
-    { field: 'nome', headerName: 'Nome', width: 100 },
-];
+import { styles } from 'Styles/dashboard/employees/indexStyle'
+import Emp from 'Components/Emp';
+
+import { InferGetServerSidePropsType } from 'next'
+type EmpType = {
+    id: number
+    gpn: string
+    name: string
+    jobTitle: string
+    promotion: string
+    actualLead: string
+    futureRank: string
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    
+    let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation`
+    const headers = new Headers()
+    headers.append('Authorization', `Bearer ${context.req.cookies['auth.token']}`)
+    const config = {
+        method: 'GET',
+        headers: headers
+    }
+
+    const res = await fetch(url,config)
+    const emps: EmpType[] = await res.json()
   
-const rows = [
-    { id: 1, nome: 'Snow' },
-];
-
-export default function Employee() {
-    const gpn = 'd-000001'
-
+    return {
+        props: {
+            emps,
+        },
+    }
+}
+export default function Employees({ emps }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
-        <React.Fragment>
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <Paper sx={{ p:2 }}>
-                        <Grid container direction="row" justifyContent="space-between" >
-                            <Typography component="h2" variant="h6" gutterBottom>Funcionarios</Typography>
-                            <Link href={'employees/' + gpn} passHref>
-                                <Button disabled color="secondary" variant="contained">Exibir Funcionário</Button>
-                            </Link>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Box sx={{ mt:2 }}>
-                                <div style={{ height: 350, width: '100%' }}>
-                                    <DataGrid
-                                        rows={rows}
-                                        columns={columns}
-                                        pageSize={4}
-                                        rowsPerPageOptions={[4]}/>
-                                </div>
-                            </Box>
-                        </Grid>
-                    </Paper>
-                </Grid>
-            </Grid>
-        </React.Fragment>
+        <Emp rows={emps} pageRows={20} headerHeight={37} rowHeight={31} heightPaper={850} />
+    )
+}
+
+Employees.getLayout = function getLayout(page: React.ReactElement) {
+    return (
+      <Layout>{page}</Layout>
     )
 }

@@ -69,7 +69,25 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const mdTheme = createTheme();
+const mdTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#424242',
+    },
+    secondary: {
+      main: '#FFCE56',
+    },
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 800,
+      md: 1100,
+      lg: 1400,
+      xl: 1736,
+    },
+  },
+});
 
 interface LayoutProps {
   children: React.ReactNode;
