@@ -51,13 +51,18 @@ export default function Imports() {
         )
     }
 
+    function onSubmit(file: File){
+
+    }
+
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <Paper sx={styles.paper}>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={2} justifyContent="space-between">
                         <Grid item xs={12}><Typography sx={styles.title} variant="h6">Importações</Typography></Grid>
+                        
                         <Grid item xs={6} md={3}>
                             <FormControl sx={{ width: "100%" }} size="small">
                                 <InputLabel id="attribute-select-label" >Base de Informações</InputLabel>
