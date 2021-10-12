@@ -1,10 +1,12 @@
 import * as React from 'react';
 import Layout from 'Components/Layout'
 import Button from '@mui/material/Button';
-import { Paper, Grid, Typography,  Box } from '@mui/material';
+import { Paper, Grid, Typography, Box } from '@mui/material';
 import { DataGrid, GridColDef, GridSelectionModel } from '@mui/x-data-grid';
 import { GetServerSideProps, InferGetStaticPropsType } from 'next'
 import Link from 'next/link';
+import { useEffect } from 'react';
+import { api } from 'services/api';
 
 import { styles } from 'Styles/dashboard/employees/indexStyle'
 import Emp from 'Components/Emp';
@@ -20,26 +22,37 @@ type EmpType = {
     futureRank: string
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    
-    let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation`
-    const headers = new Headers()
-    headers.append('Authorization', `Bearer ${context.req.cookies['auth.token']}`)
-    const config = {
-        method: 'GET',
-        headers: headers
-    }
+// export const getServerSideProps: GetServerSideProps = async (context) => {
 
-    const res = await fetch(url,config)
-    const emps: EmpType[] = await res.json()
-  
-    return {
-        props: {
-            emps,
-        },
+//     let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation`
+//     const headers = new Headers()
+//     headers.append('Authorization', `Bearer ${context.req.cookies['auth.token']}`)
+//     const config = {
+//         method: 'GET',
+//         headers: headers
+//     }
+
+//     const res = await fetch(url,config)
+//     const emps: EmpType[] = await res.json()
+
+//     return {
+//         props: {
+//             emps,
+//         },
+//     }
+// }
+export default function Employees() {
+    const [emps, setEmps] = React.useState([]);
+
+    useEffect(() => {
+        getEmployesData();
+    }, [])
+
+    async function getEmployesData() {
+        await api.get('https://performance-tracker-fiap.herokuapp.com/employee-evaluation').then((response) => {
+            setEmps(response.data)
+        })
     }
-}
-export default function Employees({ emps }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
         <Emp rows={emps} pageRows={20} headerHeight={37} rowHeight={31} heightPaper={850} />
     )
@@ -47,6 +60,6 @@ export default function Employees({ emps }: InferGetServerSidePropsType<typeof g
 
 Employees.getLayout = function getLayout(page: React.ReactElement) {
     return (
-      <Layout>{page}</Layout>
+        <Layout>{page}</Layout>
     )
 }
