@@ -36,12 +36,12 @@ export default function Chart() {
     datasets: [{
       data: [budgetUsed, budgetLeft],
       backgroundColor: [
-        '#8884d8',
         '#8884d853',
+        '#8884d8',
       ],
       hoverBackgroundColor: [
-        '#8884d8',
         '#8884d853',
+        '#8884d8',
       ]
     }]
   };

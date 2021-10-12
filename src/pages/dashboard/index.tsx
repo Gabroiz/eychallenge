@@ -10,6 +10,9 @@ import { styles } from 'Styles/dashboard/indexStyle';
 import Emp from 'Components/Emp';
 import LastPromoted from 'Components/LastPromoted';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { api } from 'services/api';
+import { useEffect } from 'react';
+import BudgetUses from 'Components/BudgetUses';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -45,38 +48,58 @@ function a11yProps(index: number) {
 }
 
 type EmpType = {
-    id: number
-    gpn: string
-    name: string
-    jobTitle: string
-    promotion: string
-    actualLead: string
-    futureRank: string
+  id: number
+  gpn: string
+  name: string
+  jobTitle: string
+  promotion: string
+  actualLead: string
+  futureRank: string
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+// export const getServerSideProps: GetServerSideProps = async (context) => {
 
-    let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation`
-    
-    const headers = new Headers()
-    headers.append('Authorization', `Bearer ${context.req.cookies['auth.token']}`)
-    const config = {
-        method: 'GET',
-        headers: headers
-    }
+//     let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation`
 
-    const res = await fetch(url,config)
-    const emps: EmpType[] = await res.json()
-  
-    return {
-        props: {
-            emps,
-        },
-    }
-}
+//     const headers = new Headers()
+//     headers.append('Authorization', `Bearer ${context.req.cookies['auth.token']}`)
+//     const config = {
+//         method: 'GET',
+//         headers: headers
+//     }
 
-export default function Dashboard({ emps }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+//     const res = await fetch(url,config)
+//     const emps: EmpType[] = await res.json()
+
+//     return {
+//         props: {
+//             emps,
+//         },
+//     }
+// }
+
+export default function Dashboard() {
   const [value, setValue] = React.useState(0);
+
+  const [emps, setEmps] = React.useState([]);
+  const [lastPromotions, setLastPromotions] = React.useState([]);
+
+  useEffect(() => {
+    getEmployesData();
+    getLastPromotionsData();
+  }, [])
+
+  async function getEmployesData() {
+    await api.get('https://performance-tracker-fiap.herokuapp.com/employee-evaluation').then((response) => {
+      setEmps(response.data)
+    })
+  }
+
+  async function getLastPromotionsData() {
+    await api.get('https://performance-tracker-fiap.herokuapp.com/history/promotions').then((response) => {
+      setLastPromotions(response.data)
+    })
+  }
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -86,9 +109,9 @@ export default function Dashboard({ emps }: InferGetServerSidePropsType<typeof g
     <Grid container spacing={2}>
       <Grid item xs={12} sm={12} lg={4}>
         <Paper sx={styles.chartsPaper} variant="outlined" square>
-            <Box sx={styles.chartBox} >
-              <PieChart />
-            </Box>
+          <Box sx={styles.chartBox} >
+            <PieChart />
+          </Box>
         </Paper>
       </Grid>
       <Grid item xs={12} sm={12} lg={8}>
@@ -98,24 +121,24 @@ export default function Dashboard({ emps }: InferGetServerSidePropsType<typeof g
       </Grid>
       <Grid item xs={12} sm={12} lg={4} >
         <Paper sx={styles.paperDown} variant="outlined" square>
-              <Box sx={styles.box}>
-                <Box sx={styles.panelBox}>
-                  <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-                    <Tab label="Promoções realizadas" {...a11yProps(0)} />
-                    <Tab label="Budget utilizado" {...a11yProps(1)} />
-                  </Tabs>
-                </Box>
-                <TabPanel value={value} index={0}>
-                  <LastPromoted rows={emps} pageRows={6} headerHeight={37} rowHeight={31}/>
-                </TabPanel>
-                <TabPanel value={value} index={1}>
-                  
-                </TabPanel>
-              </Box>
+          <Box sx={styles.box}>
+            <Box sx={styles.panelBox}>
+              <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
+                <Tab label="Promoções realizadas" {...a11yProps(0)} />
+                <Tab label="Budget utilizado" {...a11yProps(1)} />
+              </Tabs>
+            </Box>
+            <TabPanel value={value} index={0}>
+              <LastPromoted rows={lastPromotions} pageRows={6} headerHeight={37} rowHeight={31} height={300} />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <BudgetUses rows={lastPromotions} pageRows={6} headerHeight={37} rowHeight={31} height={300} />
+            </TabPanel>
+          </Box>
         </Paper>
       </Grid>
       <Grid item xs={12} sm={12} lg={8}>
-        <Emp rows={emps} pageRows={6} headerHeight={37} rowHeight={31} heightPaper={400}/>
+        <Emp rows={emps} pageRows={6} headerHeight={37} rowHeight={31} heightPaper={400} height={300} />
       </Grid>
     </Grid>
   )

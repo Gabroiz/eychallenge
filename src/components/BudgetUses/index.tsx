@@ -10,18 +10,18 @@ import { GetServerSideProps } from 'next';
 
 type Emp = {
     id: number
-    gpn: string
-    oldJobTitle: string
-    newJobTitle: string
-    promotionDate: string
+    useDate: string
+    manager: string
+    amountUsed: string
+    task: string
 }
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'id', hide: true },
-    { field: 'promotionDate', headerName: 'Data', flex: 0.08 },
-    { field: 'gpn', headerName: 'GPN', flex: 0.1, minWidth: 120, },
-    { field: 'oldJobTitle', headerName: 'Cargo Anterior', flex: 0.1 },
-    { field: 'newJobTitle', headerName: 'Cargo Atual', flex: 0.1 },
+    { field: 'useDate', headerName: 'Data', flex: 0.08 },
+    { field: 'manager', headerName: 'Gerente', flex: 0.08 },
+    { field: 'amountUsed', headerName: 'Budget Ultilizado', flex: 0.05 },
+    { field: 'task', headerName: 'Tarefa realizada', flex: 0.1 },
 ];
 
 const useStyles = makeStyles({
@@ -59,7 +59,7 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     
-    let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/history/promotions`
+    let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/history/budgets`
     const headers = new Headers()
     headers.append('Authorization', `Bearer ${context.req.cookies['auth.token']}`)
     const config = {
@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const LastPromoted: React.FC<Props> = (props) => {
     
-    const { pageRows, headerHeight, rowHeight,  height, rows} = props
+    const { pageRows, headerHeight, rowHeight, height, rows} = props
 
     const classes = useStyles();
 
@@ -92,11 +92,10 @@ const LastPromoted: React.FC<Props> = (props) => {
     }
 
     return (
-        <Box sx={{ display: 'flex', height: '100%'}}>
-            <Box sx={{ height: height }} style={styles.boxTable}>
+        <Box sx={{ display: 'flex', height: height}}>
+            <Box style={styles.boxTable}>
                 <ClickAwayListener onClickAway={() => { handleClick(true) }}>
                     <DataGrid
-                    
                         className={classes.root}
                         onPageChange={() => {
                             handleClick(true)
