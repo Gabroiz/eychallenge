@@ -80,14 +80,14 @@ export default function Imports() {
                             <div {...getRootProps()}>
                                 <Input {...getInputProps()} />
                                 <Button variant="outlined" size="large" startIcon={<FileCopy />}>Clique aqui ou arraste aqui os arquivos .CSV!</Button>
-                                {/* {JSON.stringify(files)}  */}
+                                {/* {JSON.stringify(files)} */}
                             </div>
                             {/* {JSON.stringify(files)}  */}
                         </Grid>
 
                         <Grid item xs={10} md={10}>
                             {files.map((fileWrapper, idx) => (
-                                <SingleFileUploadWithProgress onDelete={onDelete} key={idx} file={fileWrapper.file} />
+                                <SingleFileUploadWithProgress onUpload={onUpload} onDelete={onDelete} key={idx} file={fileWrapper.file} />
                             ))}
                         </Grid>
 

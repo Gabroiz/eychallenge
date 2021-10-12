@@ -6,33 +6,30 @@ import { FileHeader } from "./FileHeader";
 export interface SingleFileUploadWithProgressProps{
     file: File;
     onDelete: (file: File) => void;
-    //onUpload: (file: File, url: string) => void;
+    onUpload: (file: File, url: string) => void;
 }
 
-export function SingleFileUploadWithProgress({file, onDelete}: SingleFileUploadWithProgressProps){
+export function SingleFileUploadWithProgress({file, onDelete, onUpload}: SingleFileUploadWithProgressProps){
     const[progress, setProgress] = useState(0);
     const [buffer, setBuffer] = React.useState(10);
 
     useEffect(() => {
         async function upload() {
             const url = await uploadFile(file, setProgress);
-            //onUpload(file, url);
+            onUpload(file, url);
         }
 
         upload ()
     }, []);
-    return (
-        <Grid item>
-            <FileHeader file={file} onDelete={onDelete}/>
-            <LinearProgress variant="buffer" value={progress} valueBuffer={buffer} />
-        </Grid>
-        
-    )
-
+    return <Grid item>
+        <FileHeader file={file} onDelete={onDelete}/>
+        <LinearProgress variant="buffer" value={progress} valueBuffer={buffer} />
+    </Grid>
 }
 
 function uploadFile(file: File, onProgress: (percentage: number) => void) {
-    const url = 'https://performance-tracker-fiap.herokuapp.com/employee-evaluation/csv';
+    const url = '';
+    console.log(file);
     return new Promise<string>((res, rej) => {
         const xhr = new XMLHttpRequest();
         xhr.open('POST','url')
