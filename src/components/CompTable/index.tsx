@@ -2,16 +2,21 @@ import * as React from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 const columns: GridColDef[] = [
-  { field: 'id', headerName: 'id', width: 100 },
-  { field: 'name', headerName: 'Nome da Empresa', width: 150 },
-  { field: 'business', headerName: 'Ramo de atuação', width: 150 },
-  { field: 'country', headerName: 'País', width: 150 }
+  { field: 'id', headerName: 'id', width: 100} ,
+  { field: 'country', headerName: 'country', flex: 0.1} ,
+  { field: 'city', headerName: 'city', flex: 0.1} ,
+  { field: 'sl', headerName: 'sl', flex: 0.1} ,
+  { field: 'subSL', headerName: 'subSL', flex: 0.1} ,
+  { field: 'smuName', headerName: 'smuName', flex: 0.1} ,
+  { field: 'budget', headerName: 'budget', flex: 0.1} ,
+  { field: 'totalBudget', headerName: 'totalBudget', flex: 0.1} ,
+  { field: 'percentage', headerName: 'percentage', flex: 0.1} 
 ];
 
 const rows = [
-  { id: 1, name: 'Empresa 1', business: 'ramo de mercado', country: "Brasil" },
-  { id: 2, name: 'Compania distribuidora', business: 'ramo de mercado', country: "Estados Unidos" },
-  { id: 3, name: 'Sem tempo irmão S.A', business: 'ramo de mercado', country: "Inglaterra" }
+  { id: 1, country: "Brasil", city: " teste ", sl: " teste ", subSL: " teste ", smuName: " teste ", budget: 50, totalBudget: 100, percentage: 0.2 },
+  { id: 2, country: "Estados Unidos", city: " teste ", sl: " teste ", subSL: " teste ", smuName: " teste ", budget: 50, totalBudget: 100, percentage: 0.2 },
+  { id: 3, country: "Inglaterra", city: " teste ", sl: " teste ", subSL: " teste ", smuName: " teste ", budget: 50, totalBudget: 100, percentage: 0.2 }
 ];
 
 export default function DataTable() {
