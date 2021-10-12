@@ -89,7 +89,7 @@ const Emp: React.FC<Props> = (props) => {
     return (
         <Grid container spacing={1}>
             <Grid item xs={12}>
-                <Paper sx={{ p: 2, height: heightPaper }} variant="outlined" square>
+                <Paper sx={{ p: 2, height: heightPaper }} elevation={0}>
                     <Grid container direction="row" justifyContent="space-between" >
                         <Typography component="h2" variant="h6" gutterBottom>Funcionarios</Typography>
                         <Box>

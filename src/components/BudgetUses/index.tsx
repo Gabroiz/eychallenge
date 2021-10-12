@@ -8,7 +8,7 @@ import { styles } from './indexStyle'
 import { makeStyles } from '@mui/styles';
 import { GetServerSideProps } from 'next';
 
-type Emp = {
+type BudgetHistory = {
     id: number
     useDate: string
     manager: string
@@ -18,8 +18,8 @@ type Emp = {
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'id', hide: true },
-    { field: 'useDate', headerName: 'Data', flex: 0.08 },
-    { field: 'manager', headerName: 'Gerente', flex: 0.08 },
+    { field: 'useDate', headerName: 'Data', },
+    { field: 'manager', headerName: 'Gerente', flex: 0.07 },
     { field: 'amountUsed', headerName: 'Budget Ultilizado', flex: 0.05 },
     { field: 'task', headerName: 'Tarefa realizada', flex: 0.1 },
 ];
@@ -50,7 +50,7 @@ const useStyles = makeStyles({
 });
 
 type Props = {
-    rows: Emp[];
+    rows: BudgetHistory[];
     pageRows: number;
     headerHeight: number;
     rowHeight: number;
@@ -68,11 +68,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
     const res = await fetch(url,config)
-    const emps: Emp[] = await res.json()
+    const budgets: BudgetHistory[] = await res.json()
   
     return {
         props: {
-            emps,
+            budgets,
         },
     }
 }

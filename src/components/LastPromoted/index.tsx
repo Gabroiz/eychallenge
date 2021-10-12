@@ -18,7 +18,7 @@ type Emp = {
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'id', hide: true },
-    { field: 'promotionDate', headerName: 'Data', flex: 0.08 },
+    { field: 'promotionDate', headerName: 'Data', },
     { field: 'gpn', headerName: 'GPN', flex: 0.1, minWidth: 120, },
     { field: 'oldJobTitle', headerName: 'Cargo Anterior', flex: 0.1 },
     { field: 'newJobTitle', headerName: 'Cargo Atual', flex: 0.1 },

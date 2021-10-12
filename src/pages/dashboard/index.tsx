@@ -13,6 +13,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { api } from 'services/api';
 import { useEffect } from 'react';
 import BudgetUses from 'Components/BudgetUses';
+import { height } from '@mui/system';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -24,7 +25,7 @@ function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
+    <Box
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
@@ -36,11 +37,18 @@ function TabPanel(props: TabPanelProps) {
           <Typography>{children}</Typography>
         </Box>
       )}
-    </div>
+    </Box>
   );
 }
 
 function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+function a11yProps2(index: number) {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
@@ -79,14 +87,18 @@ type EmpType = {
 // }
 
 export default function Dashboard() {
+  const [valueTab1, setvalueTab1] = React.useState(0);
+
   const [value, setValue] = React.useState(0);
 
   const [emps, setEmps] = React.useState([]);
   const [lastPromotions, setLastPromotions] = React.useState([]);
+  const [budgetUses, setBudgetHistory] = React.useState([]);
 
   useEffect(() => {
     getEmployesData();
     getLastPromotionsData();
+    getbudgetUses();
   }, [])
 
   async function getEmployesData() {
@@ -101,41 +113,77 @@ export default function Dashboard() {
     })
   }
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+  async function getbudgetUses() {
+    await api.get('https://performance-tracker-fiap.herokuapp.com/history/budgets').then((response) => {
+      setBudgetHistory(response.data)
+    })
+  }
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={12} lg={4}>
-        <Paper sx={styles.chartsPaper} variant="outlined" square>
+        <Paper sx={styles.chartsPaper} elevation={0}>
           <Box sx={styles.chartBox} >
             <PieChart />
           </Box>
         </Paper>
       </Grid>
       <Grid item xs={12} sm={12} lg={8}>
-        <Paper sx={styles.paperDefault} variant="outlined" square>
-          <BarChart />
-        </Paper>
-      </Grid>
-      <Grid item xs={12} sm={12} lg={4} >
-        <Paper sx={styles.paperDown} variant="outlined" square>
+        <Box style={styles.paperDefault}>
           <Box sx={styles.box}>
-            <Box sx={styles.panelBox}>
-              <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-                <Tab label="Promoções realizadas" {...a11yProps(0)} />
-                <Tab label="Budget utilizado" {...a11yProps(1)} />
+            <Box>
+              <Tabs value={valueTab1} onChange={(event, newValue) => { setvalueTab1(newValue);}} aria-label="basic tabs example" centered>
+                <Tab label="Budget por área" {...a11yProps2(0)} />
+                <Tab label="Indicadores" {...a11yProps2(1)} />
               </Tabs>
             </Box>
-            <TabPanel value={value} index={0}>
-              <LastPromoted rows={lastPromotions} pageRows={6} headerHeight={37} rowHeight={31} height={300} />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <BudgetUses rows={lastPromotions} pageRows={6} headerHeight={37} rowHeight={31} height={300} />
+            <Paper elevation={0}>
+              <TabPanel value={valueTab1} index={0}>
+                <Box sx={{p:2, height: 320}}>
+                  <BarChart />
+                </Box>
+              </TabPanel>
+            </Paper>
+            <TabPanel value={valueTab1} index={1}>
+              <Grid container spacing={3}>
+                <Grid item xs={4}>
+                  <Paper sx={{p:1, height: 80}} variant="outlined"  >
+                    <Typography> Budget </Typography>
+                  </Paper>
+                </Grid>
+                <Grid item  xs={4}>
+                <Paper sx={{p:1, height: 80}} variant="outlined"  >
+                    <Typography> Promotions </Typography>
+                  </Paper>
+                </Grid>
+                <Grid item  xs={4}>
+                  <Paper sx={{p:1, height: 80}} variant="outlined"  >
+                    <Typography> Progress </Typography>
+                  </Paper>
+                </Grid>
+              </Grid>
             </TabPanel>
           </Box>
-        </Paper>
+        </Box>
+        
+      </Grid>
+      <Grid item xs={12} sm={12} lg={4} >
+        <Box sx={styles.boxHistory} >
+          <Box>
+            <Tabs value={value} onChange={(event, newValue) => { setValue(newValue);}} aria-label="basic tabs example" centered>
+              <Tab label="Promoções realizadas" {...a11yProps(0)} />
+              <Tab label="Budget utilizado" {...a11yProps(1)} />
+            </Tabs>
+          </Box>
+          <Paper elevation={0}>
+            <TabPanel value={value} index={0}>
+              <LastPromoted rows={lastPromotions} pageRows={6} headerHeight={37} rowHeight={31} height={320} />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <BudgetUses rows={budgetUses} pageRows={6} headerHeight={37} rowHeight={31} height={320} />
+            </TabPanel>
+          </Paper>
+        </Box>
       </Grid>
       <Grid item xs={12} sm={12} lg={8}>
         <Emp rows={emps} pageRows={6} headerHeight={37} rowHeight={31} heightPaper={400} height={300} />

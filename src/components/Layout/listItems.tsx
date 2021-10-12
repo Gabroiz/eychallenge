@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { ListItemIcon, ListSubheader, ListItemText, ListItem } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
-import BusinessIcon from '@mui/icons-material/Business';
+import LogoutIcon from '@mui/icons-material/Logout';
 import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 import UploadIcon from '@mui/icons-material/Upload';
 
@@ -29,9 +29,9 @@ export const mainListItems = (
     <Link href='/dashboard/companies' passHref>
       <ListItem button>
         <ListItemIcon>
-          <BusinessIcon />
+          <BuildCircleIcon />
         </ListItemIcon>
-        <ListItemText primary="Empresas" />
+        <ListItemText primary="Controles" />
       </ListItem>
     </Link>
     <Link href='/dashboard/imports' passHref>
@@ -51,9 +51,9 @@ export const secondaryListItems = (
     <Link href='/dashboard/imports' passHref>
       <ListItem button>
         <ListItemIcon>
-          <BuildCircleIcon />
+          <LogoutIcon />
         </ListItemIcon>
-        <ListItemText primary="Controles" />
+        <ListItemText primary="Sair" />
       </ListItem>
     </Link>
   </div>

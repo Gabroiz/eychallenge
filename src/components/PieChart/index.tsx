@@ -16,7 +16,7 @@ export default function Chart() {
       let leftBudget = 0;
       let usedBudget = 0;
 
-      response.data.map((record) => {
+      response.data.map((record: { budget: number; totalBudget: number; }) => {
         leftBudget += record.budget;
         usedBudget += (record.totalBudget - record.budget);
       })

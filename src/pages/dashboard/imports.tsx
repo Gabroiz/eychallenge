@@ -59,10 +59,11 @@ export default function Imports() {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <Paper sx={styles.paper}>
+                <Paper sx={styles.paper} elevation={0}>
                     <Grid container spacing={2} justifyContent="space-between">
-                        <Grid item xs={12}><Typography sx={styles.title} variant="h6">Importações</Typography></Grid>
-                        
+                        <Grid item xs={12}>
+                            <Typography sx={styles.title} variant="h6">Importações</Typography>
+                        </Grid>
                         <Grid item xs={6} md={3}>
                             <FormControl sx={{ width: "100%" }} size="small">
                                 <InputLabel id="attribute-select-label" >Base de Informações</InputLabel>
@@ -104,7 +105,6 @@ export default function Imports() {
                                 </Button>
                             </label>
                         </Grid>
-
                     </Grid>
                 </Paper>
             </Grid>
