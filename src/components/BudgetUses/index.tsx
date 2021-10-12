@@ -18,14 +18,31 @@ type Emp = {
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'id', hide: true },
-    { field: 'useDate', headerName: 'Data', flex: 0.1, minWidth: 130, },
-    { field: 'manager', headerName: 'Gerente', flex: 0.1 },
-    { field: 'amountUsed', headerName: 'Budget Ultilizado', flex: 0.1 },
+    { field: 'useDate', headerName: 'Data', flex: 0.08 },
+    { field: 'manager', headerName: 'Gerente', flex: 0.08 },
+    { field: 'amountUsed', headerName: 'Budget Ultilizado', flex: 0.05 },
     { field: 'task', headerName: 'Tarefa realizada', flex: 0.1 },
 ];
 
 const useStyles = makeStyles({
     root: {
+        border: 0,
+        fontFamily: [
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ].join(','),
+        '& .MuiDataGrid-columnsContainer': {
+            backgroundColor: '#ececec' 
+          },
+        WebkitFontSmoothing: 'auto',
         '&.MuiDataGrid-root .MuiDataGrid-cell:focus': {
             outline: 'none',
         },
@@ -37,6 +54,7 @@ type Props = {
     pageRows: number;
     headerHeight: number;
     rowHeight: number;
+    height: number;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -61,7 +79,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const LastPromoted: React.FC<Props> = (props) => {
     
-    const { pageRows, headerHeight, rowHeight,  rows} = props
+    const { pageRows, headerHeight, rowHeight, height, rows} = props
 
     const classes = useStyles();
 
@@ -74,7 +92,7 @@ const LastPromoted: React.FC<Props> = (props) => {
     }
 
     return (
-        <Box sx={{ display: 'flex', height: '100%'}}>
+        <Box sx={{ display: 'flex', height: height}}>
             <Box style={styles.boxTable}>
                 <ClickAwayListener onClickAway={() => { handleClick(true) }}>
                     <DataGrid
@@ -94,7 +112,7 @@ const LastPromoted: React.FC<Props> = (props) => {
                         rowsPerPageOptions={[pageRows]}
                         headerHeight={headerHeight}
                         rowHeight={rowHeight}
-                        autoHeight={true}
+                        autoHeight={false}
                         selectionModel={selectionModel}
                         rows={rows}
                         columns={columns}

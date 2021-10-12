@@ -129,16 +129,16 @@ export default function Dashboard() {
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-              <LastPromoted rows={lastPromotions} pageRows={6} headerHeight={37} rowHeight={31} />
+              <LastPromoted rows={lastPromotions} pageRows={6} headerHeight={37} rowHeight={31} height={300} />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <BudgetUses rows={lastPromotions} pageRows={6} headerHeight={37} rowHeight={31} />
+              <BudgetUses rows={lastPromotions} pageRows={6} headerHeight={37} rowHeight={31} height={300} />
             </TabPanel>
           </Box>
         </Paper>
       </Grid>
       <Grid item xs={12} sm={12} lg={8}>
-        <Emp rows={emps} pageRows={6} headerHeight={37} rowHeight={31} heightPaper={400} />
+        <Emp rows={emps} pageRows={6} headerHeight={37} rowHeight={31} heightPaper={400} height={300} />
       </Grid>
     </Grid>
   )

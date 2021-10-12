@@ -32,6 +32,23 @@ const columns: GridColDef[] = [
 
 const useStyles = makeStyles({
     root: {
+        border: 0,
+        fontFamily: [
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ].join(','),
+        '& .MuiDataGrid-columnsContainer': {
+            backgroundColor: '#ececec' 
+          },
+        WebkitFontSmoothing: 'auto',
         '&.MuiDataGrid-root .MuiDataGrid-cell:focus': {
             outline: 'none',
         },
@@ -44,11 +61,12 @@ type Props = {
     headerHeight: number;
     rowHeight: number;
     heightPaper: number;
+    height: number;
 };
 
 const Emp: React.FC<Props> = (props) => {
     
-    const { pageRows, headerHeight, rowHeight, heightPaper, rows} = props
+    const { pageRows, headerHeight, rowHeight, heightPaper, height, rows} = props
 
     const classes = useStyles();
     const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
@@ -114,7 +132,7 @@ const Emp: React.FC<Props> = (props) => {
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
-                        <Box sx={styles.boxDefault}>
+                        <Box sx={{ display: 'flex', mt: 3, height: height }} >
                             <Box style={styles.boxTable}>
                                 <ClickAwayListener onClickAway={() => { handleClick(true) }}>
                                     <DataGrid
@@ -134,7 +152,7 @@ const Emp: React.FC<Props> = (props) => {
                                         rowsPerPageOptions={[pageRows]}
                                         headerHeight={headerHeight}
                                         rowHeight={rowHeight}
-                                        autoHeight={true}
+                                        autoHeight={false}
                                         selectionModel={selectionModel}
                                         rows={rows}
                                         columns={columns}

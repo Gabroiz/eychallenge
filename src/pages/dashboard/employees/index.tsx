@@ -54,7 +54,7 @@ export default function Employees() {
         })
     }
     return (
-        <Emp rows={emps} pageRows={20} headerHeight={37} rowHeight={31} heightPaper={850} />
+        <Emp rows={emps} pageRows={20} headerHeight={37} rowHeight={31} heightPaper={850} height={750}/>
     )
 }
 
