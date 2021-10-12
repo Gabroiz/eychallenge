@@ -1,10 +1,11 @@
 import * as React from 'react';
 import Link from 'next/link'
-import {ListItemIcon , ListSubheader, ListItemText, ListItem} from '@mui/material';
+import { ListItemIcon, ListSubheader, ListItemText, ListItem } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import BusinessIcon from '@mui/icons-material/Business';
 import BuildCircleIcon from '@mui/icons-material/BuildCircle';
+import UploadIcon from '@mui/icons-material/Upload';
 
 
 export const mainListItems = (
@@ -31,6 +32,14 @@ export const mainListItems = (
           <BusinessIcon />
         </ListItemIcon>
         <ListItemText primary="Empresas" />
+      </ListItem>
+    </Link>
+    <Link href='/dashboard/imports' passHref>
+      <ListItem button>
+        <ListItemIcon>
+          <UploadIcon />
+        </ListItemIcon>
+        <ListItemText primary="Importações" />
       </ListItem>
     </Link>
   </div>
