@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Layout from 'Components/Layout'
 import Button from '@mui/material/Button';
-import { Paper, IconButton, Grid, TextField, Select, MenuItem, InputLabel, SelectChangeEvent, FormControl, Box, Dialog, AppBar, Toolbar, Typography, Container, ThemeProvider, createTheme } from '@mui/material';
+import { Paper, IconButton, Grid, TextField, Select, MenuItem, InputLabel, SelectChangeEvent, FormControl, Box, Dialog, AppBar, Toolbar, Typography, Container, ThemeProvider, createTheme, InputAdornment, Input, useMediaQuery } from '@mui/material';
 import { AddBox, HighlightOff} from '@mui/icons-material';
 import { green, red } from '@mui/material/colors';
 import CloseIcon from '@mui/icons-material/Close';
@@ -17,8 +17,8 @@ import ErrorPage from 'next/error'
 
 import { styles } from 'Styles/dashboard/employees/idStyle'
 import { GetServerSideProps } from 'next';
-import Simulator from 'Components/Simulator';
 
+import { useTheme } from '@mui/material/styles';
 
 import { parseCookies } from 'nookies';
 
@@ -77,12 +77,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const mdTheme = createTheme({
     palette: {
-      primary: {
-        main: '#424242',
-      },
-      secondary: {
-        main: '#FFCE56',
-      },
+        primary: {
+          main: '#424242',
+        },
+        secondary: {
+          main: '#FFCE56',
+        },
     },
     breakpoints: {
       values: {
@@ -93,7 +93,7 @@ const mdTheme = createTheme({
         xl: 1736,
       },
     },
-  });
+});
 
 const Employee = ({ emp }: Emp) => {
     
@@ -105,6 +105,9 @@ const Employee = ({ emp }: Emp) => {
 
     const [hiringDate, setHiringDate] = React.useState<Date | null>(parse(emp.hiringDate, 'yyyy-dd-MM', new Date()));
     const [lastPromotionDate, setLastPromotionDate] = React.useState<Date | null>(parse(emp.hiringDate, 'yyyy-dd-MM', new Date()));
+
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
     const [open, setOpen] = React.useState(false);
     const handleClickOpen = () => {
@@ -249,7 +252,12 @@ const Employee = ({ emp }: Emp) => {
                     <Grid item xs={12} md={12} marginTop={2}>
                         <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
                             <Button color="secondary" variant="contained" onClick={handleClickOpen}>Simular Promoção</Button>
-                            <Dialog fullScreen open={open} onClose={handleClose}>
+                            <Dialog
+                                fullScreen={fullScreen}
+                                open={open}
+                                onClose={handleClose}
+                                aria-labelledby="responsive-dialog-title"
+                            >
                                 <AppBar sx={{ position: 'relative' }}>
                                 <Toolbar>
                                     <IconButton
@@ -269,14 +277,54 @@ const Employee = ({ emp }: Emp) => {
                                 </AppBar>
                                 <Container maxWidth="xl" sx={{p:5}}>
                                     <Grid container spacing={2}>
-                                        <Grid item xs={12}>
-                                            <TextField fullWidth id="outlined-basic" label="Salário Atual" variant="outlined" size="small"/>
+                                        <Grid container item xs={12} spacing={3}>
+                                            <Grid item xs={12} sm={6} md={2}>
+                                                <TextField fullWidth id="outlined-basic" label="GPN" defaultValue={emp.gpn} variant="filled" size="small" InputProps={{readOnly: true}}/>
                                             </Grid>
-                                            <Grid item xs={12}>
-                                            <TextField fullWidth id="outlined-basic" label="Salário com Bonificação" variant="outlined" size="small"/>
+                                            <Grid item xs={12} sm={6} md={3}>
+                                                <TextField fullWidth id="outlined-basic" label="Nome" defaultValue={emp.name} variant="filled" size="small" InputProps={{readOnly: true}}/>
                                             </Grid>
-                                            <Grid item xs={12}>
-                                            <TextField fullWidth id="outlined-basic" label="Novo Cargo" variant="outlined" size="small"/>
+                                            <Grid item xs={12} sm={6} md={2}>
+                                                <TextField fullWidth id="outlined-basic" label="Situação de Promoção" defaultValue={emp.promotion} variant="filled" size="small" InputProps={{readOnly: true}}/>
+                                            </Grid>
+                                            <Grid item xs={12} sm={6} md={2}>
+                                                <TextField fullWidth id="outlined-basic" label="Lead atual" defaultValue={emp.actualLead} variant="filled" size="small" InputProps={{readOnly: true}}/>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={3}>
+                                            <InputLabel htmlFor="standard-adornment-amount" >Salário Atual</InputLabel>
+                                            <Input 
+                                                fullWidth
+                                                id="standard-adornment-amount"
+                                                required={true}
+                                                value={emp.salary}
+                                                //onChange={handleChange('amount')}
+                                                startAdornment={<InputAdornment position="start">R$</InputAdornment>}
+                                                
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={3}>
+                                            <InputLabel htmlFor="standard-adornment-amount">Salário com Bonificação</InputLabel>
+                                            <Input 
+                                                fullWidth
+                                                required={true}
+                                                id="standard-adornment-amount"
+                                                value={emp.salary}
+                                                //onChange={handleChange('amount')}
+                                                startAdornment={<InputAdornment position="start">R$</InputAdornment>}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6}>
+                                            <TextField fullWidth id="outlined-basic" label="Cargo atual" variant="filled" size="small" InputProps={{readOnly: true}}/>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6}>
+                                            <TextField fullWidth id="outlined-basic" label="Novo Cargo" variant="filled" size="small" InputProps={{readOnly: true}}/>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={3}>
+                                            <TextField fullWidth id="outlined-basic" label="Budget Atual" variant="filled" size="small" InputProps={{readOnly: true}}/>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={3}>
+                                            <TextField fullWidth id="outlined-basic" label="Budget Restante" variant="filled" size="small" InputProps={{readOnly: true}}/>
                                         </Grid>
                                     </Grid>
                                 </Container>

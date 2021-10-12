@@ -10,18 +10,18 @@ import { GetServerSideProps } from 'next';
 
 type Emp = {
     id: number
-    gpn: string
-    oldJobTitle: string
-    newJobTitle: string
-    promotionDate: string
+    useDate: string
+    manager: string
+    amountUsed: string
+    task: string
 }
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'id', hide: true },
-    { field: 'promotionDate', headerName: 'Data', flex: 0.1 },
-    { field: 'gpn', headerName: 'GPN', flex: 0.1, minWidth: 130, },
-    { field: 'oldJobTitle', headerName: 'Cargo Anterior', flex: 0.1 },
-    { field: 'newJobTitle', headerName: 'Cargo Atual', flex: 0.1 },
+    { field: 'useDate', headerName: 'Data', flex: 0.1, minWidth: 130, },
+    { field: 'manager', headerName: 'Gerente', flex: 0.1 },
+    { field: 'amountUsed', headerName: 'Budget Ultilizado', flex: 0.1 },
+    { field: 'task', headerName: 'Tarefa realizada', flex: 0.1 },
 ];
 
 const useStyles = makeStyles({
@@ -41,7 +41,7 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     
-    let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/history/promotions`
+    let url=`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/history/budgets`
     const headers = new Headers()
     headers.append('Authorization', `Bearer ${context.req.cookies['auth.token']}`)
     const config = {

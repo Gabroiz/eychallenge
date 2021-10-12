@@ -12,6 +12,7 @@ import LastPromoted from 'Components/LastPromoted';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { api } from 'services/api';
 import { useEffect } from 'react';
+import BudgetUses from 'Components/BudgetUses';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -79,15 +80,24 @@ type EmpType = {
 
 export default function Dashboard() {
   const [value, setValue] = React.useState(0);
+
   const [emps, setEmps] = React.useState([]);
+  const [lastPromotions, setLastPromotions] = React.useState([]);
 
   useEffect(() => {
     getEmployesData();
+    getLastPromotionsData();
   }, [])
 
   async function getEmployesData() {
     await api.get('https://performance-tracker-fiap.herokuapp.com/employee-evaluation').then((response) => {
       setEmps(response.data)
+    })
+  }
+
+  async function getLastPromotionsData() {
+    await api.get('https://performance-tracker-fiap.herokuapp.com/history/promotions').then((response) => {
+      setLastPromotions(response.data)
     })
   }
 
@@ -119,10 +129,10 @@ export default function Dashboard() {
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-              <LastPromoted rows={emps} pageRows={6} headerHeight={37} rowHeight={31} />
+              <LastPromoted rows={lastPromotions} pageRows={6} headerHeight={37} rowHeight={31} />
             </TabPanel>
             <TabPanel value={value} index={1}>
-
+              <BudgetUses rows={lastPromotions} pageRows={6} headerHeight={37} rowHeight={31} />
             </TabPanel>
           </Box>
         </Paper>
