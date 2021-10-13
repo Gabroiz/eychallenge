@@ -2,11 +2,9 @@ import * as React from 'react';
 import Layout from 'Components/Layout'
 import Button from '@mui/material/Button';
 import { Paper, IconButton, Grid, TextField, Select, MenuItem, InputLabel, FormControl, Box, Dialog, AppBar, Toolbar, Typography, Container, ThemeProvider, createTheme, InputAdornment, Input, useMediaQuery } from '@mui/material';
-import { AddBox, HighlightOff} from '@mui/icons-material';
-import { green, red } from '@mui/material/colors';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { format, parse } from 'date-fns'
+import { parse } from 'date-fns'
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -23,8 +21,6 @@ import { useTheme } from '@mui/material/styles';
 import { parseCookies } from 'nookies';
 import { useEffect } from 'react';
 import { api } from 'services/api';
-
-import PieChart from 'Components/PieChart';
 
 type Emp = {
     emp: EmpType
@@ -65,7 +61,10 @@ var formatter = new Intl.NumberFormat('pt-br', {
     maximumFractionDigits: 3, // (causes 2500.99 to be printed as $2,501)
 });
 
-const cookies = parseCookies();
+var formatterN = new Intl.NumberFormat('pt-br', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 3, 
+});
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     //const cookies = parseCookies();
@@ -202,13 +201,19 @@ const Employee = ({ emp }: Emp) => {
                     <Grid item xs={12} sm={6} md={4}>
                         <FormControl sx={styles.formControl} size="small">
                             <InputLabel id="attribute-select-label" >Rank Atual</InputLabel>
-                            <Select labelId="attribute-select-label" id="attribute-select" value={actualLevelExp} label="Rank Atual" onChange={(event) => setCurrentPosition(event.target.value)}>
+                            <Select labelId="attribute-select-label" id="attribute-select" value={emp.actualRank} label="Rank Atual" onChange={(event) => setCurrentPosition(event.target.value)}>
                                 <MenuItem value=""> <em>None</em> </MenuItem>
-                                <MenuItem value={0}>Staff/Assistent</MenuItem>
-                                <MenuItem value={1}>Senior</MenuItem>
-                                <MenuItem value={2}>Manager</MenuItem>
-                                <MenuItem value={9}>Senior Manager</MenuItem>
-                                <MenuItem value={10}>Executive Director</MenuItem>
+                                <MenuItem value={"32-Manager"}>32-Manager</MenuItem>
+                                <MenuItem value={"65-Senior Associate"}>65-Senior Associate</MenuItem>
+                                <MenuItem value={"21-Senior Manager"}>21-Senior Manager</MenuItem>
+                                <MenuItem value={"57-Administrative Intermediate"}>57-Administrative Intermediate</MenuItem>
+                                <MenuItem value={"14-Exec Manager"}>14-Exec Manager</MenuItem>
+                                <MenuItem value={"63-Assistant Director"}>63-Assistant Director</MenuItem>
+                                <MenuItem value={"51-Intern (CS)"}>51-Intern (CS)</MenuItem>
+                                <MenuItem value={"42-Senior"}>42-Senior</MenuItem>
+                                <MenuItem value={"13-Executive Director"}>13-Executive Director</MenuItem>
+                                <MenuItem value={"66-Associate"}>66-Associate</MenuItem>
+                                <MenuItem value={"44-Staff/Assistant"}>44-Staff/Assistant</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
@@ -328,15 +333,7 @@ const Employee = ({ emp }: Emp) => {
                                             <TextField fullWidth id="outlined-basic" defaultValue={emp.actualRank} label="Cargo atual" variant="filled" size="small" InputProps={{readOnly: true}}/>
                                         </Grid>
                                         <Grid item xs={12} sm={6} md={3}>
-                                            <InputLabel htmlFor="standard-adornment-amount" >Salário Atual</InputLabel>
-                                            <Input 
-                                                fullWidth
-                                                id="standard-adornment-amount"
-                                                required={true}
-                                                value={emp.salary}
-                                                //onChange={handleChange('amount')}
-                                                startAdornment={<InputAdornment position="start">R$</InputAdornment>}
-                                            />
+                                            <TextField fullWidth id="outlined-basic" defaultValue={formatter.format(emp.salary)} label="Salário Atual" variant="filled" size="small" InputProps={{readOnly: true}}/>
                                         </Grid>
                                         <Grid item xs={12} sm={6} md={6}>
                                             <TextField fullWidth id="outlined-basic" defaultValue={emp.futureRank} label="Novo Cargo" variant="filled" size="small" InputProps={{readOnly: true}}/>
@@ -347,15 +344,16 @@ const Employee = ({ emp }: Emp) => {
                                                 fullWidth
                                                 required={true}
                                                 id="standard-adornment-amount"
-                                                value={emp.salary}
+                                                value={formatterN.format(emp.salary)}
                                                 //onChange={handleChange('amount')}
+                                                size='small'
                                                 startAdornment={<InputAdornment position="start">R$</InputAdornment>}
                                             />
                                         </Grid>
                                         <Grid container item xs={12} spacing={2}>
                                             <Grid item xs={12} sm={6}>
                                                 <Paper sx={{ p:1 }} variant='outlined'>
-                                                    <Typography variant='subtitle1' >Budget Total</Typography>
+                                                    <Typography variant='subtitle1' >Budget Atual</Typography>
                                                     <Box sx={{ p:1 }}>
                                                         <Typography variant='h5'>{formatter.format(totalBudget)}</Typography>
                                                     </Box>

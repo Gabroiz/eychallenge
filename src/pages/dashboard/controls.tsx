@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Layout from 'Components/Layout'
 import { Paper, Grid, Typography, Box, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SmuTable from 'Components/SmuTable';
 import { GetServerSideProps } from 'next';
 import {styles} from 'Styles/dashboard/companiesStyle';

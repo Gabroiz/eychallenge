@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import { Paper, Grid, Typography, Box, ClickAwayListener, useMediaQuery, useTheme, Alert, AlertTitle, Snackbar } from '@mui/material';
+import { Paper, Grid, Typography, Box, ClickAwayListener, useMediaQuery, useTheme, Alert, AlertTitle, Snackbar, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DataGrid, GridColDef, GridSelectionModel } from '@mui/x-data-grid';
 import Link from 'next/link';
 
@@ -10,6 +11,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import { styles } from './indexStyle'
 import { makeStyles } from '@mui/styles';
 import { api } from 'services/api';
+
+var formatter = new Intl.NumberFormat('pt-br', {
+    style: 'currency',
+    currency: 'BRL',
+    
+    // These options are needed to round to whole numbers if that's what you want.
+    minimumFractionDigits: 2, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+    maximumFractionDigits: 3, // (causes 2500.99 to be printed as $2,501)
+});
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'id', hide: true },
@@ -144,52 +154,83 @@ const Emp: React.FC<Props> = (props) => {
                     Dissídio anual aplicado com sucesso!
                 </Alert>
             </Snackbar>
-            <Dialog fullScreen={false} open={openDissidio} onClose={handleDissidioClose}>
-                <AppBar sx={{ position: 'relative' }}>
-                <Toolbar>
-                    <IconButton
-                    edge="start"
-                    color="inherit"
-                    onClick={handleClickDissidio}
-                    aria-label="close">
-                    <CloseIcon />
-                    </IconButton>
-                    <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                        Simulação de Dissídio
-                    </Typography>
-                    <Button autoFocus color="secondary" variant="contained" onClick={handleApplyDissidio}>
-                        Aplicar Dissídio
-                    </Button>
-                </Toolbar>
-                </AppBar>
-                <Container style={{ height: 700, width: 750 }}>
-                <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                    SMUs sem conflito de budget:
-                </Typography>
-                
-                <DataGrid
-                    rows={dissentsSimulation.smus}
-                    columns={dissentColumns}
-                    pageSize={4}
-                    rowsPerPageOptions={[4]}
-                />
-
-<               Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                    SMUs com conflito de budget:
-                </Typography>
-                
-                <DataGrid
-                    rows={dissentsSimulation.invalidSmus}
-                    columns={dissentColumns}
-                    pageSize={4}
-                    rowsPerPageOptions={[4]}
-                />
-
-                <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                    Budget total a ser utilizado para aplicação do dissídio anual: R$ {dissentsSimulation.totalBudget},00
-                </Typography>
-                </Container>
-            </Dialog>
+                <Dialog fullScreen={fullScreen} open={openDissidio} onClose={handleDissidioClose}>
+                    <AppBar sx={{ position: 'relative' }}>
+                        <Toolbar>
+                            <IconButton
+                            edge="start"
+                            color="inherit"
+                            onClick={handleClickDissidio}
+                            aria-label="close">
+                            <CloseIcon />
+                            </IconButton>
+                            <Typography sx={{ ml: 2, flex: 1 }} variant="h6">
+                                Simulação de Dissídio
+                            </Typography>
+                            <Button autoFocus color="secondary" variant="contained" onClick={handleApplyDissidio}>
+                                Aplicar Dissídio
+                            </Button>
+                        </Toolbar>
+                    </AppBar>
+                    <Container style={{ height: 700, width: 750 }}>
+                        <Grid container sx={{ mt:2}} spacing={2}>
+                            <Grid item xs={12}>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                    >
+                                        <Typography sx={{ ml: 2, flex: 1 }} variant="button">SMUs sem conflito de budget: </Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Box sx={{ height: 350, width: '100%' }}>
+                                            <DataGrid
+                                                rows={dissentsSimulation.smus}
+                                                columns={dissentColumns}
+                                                pageSize={4}
+                                                rowsPerPageOptions={[4]}
+                                            />
+                                        </Box>
+                                    </AccordionDetails>
+                                </Accordion>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                    >
+                                        <Typography sx={{ ml: 2, flex: 1 }} variant="button"> SMUs com conflito de budget:</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Box sx={{ height: 350, width: '100%' }}>
+                                            <DataGrid
+                                                rows={dissentsSimulation.invalidSmus}
+                                                columns={dissentColumns}
+                                                pageSize={4}
+                                                rowsPerPageOptions={[4]}
+                                            />
+                                        </Box>
+                                    </AccordionDetails>
+                                </Accordion>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Paper sx={{ p:1 }} variant='outlined'>
+                                    <Typography sx={{ ml: 2, flex: 1 }} variant="button">
+                                        Budget total a ser utilizado para aplicação do dissídio anual:
+                                    </Typography>
+                                    <Box>
+                                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6">
+                                            {formatter.format(dissentsSimulation.totalBudget)}
+                                        </Typography>
+                                    </Box>
+                                </Paper>
+                            </Grid>
+                        </Grid>
+                    </Container>
+                </Dialog>
             <Grid item xs={12}>
                 <Paper sx={{ p: 2, height: heightPaper }} elevation={0}>
                     <Grid container direction="row" justifyContent="space-between" >
@@ -199,39 +240,6 @@ const Emp: React.FC<Props> = (props) => {
                             <Link href={`/dashboard/employees/${encodeURIComponent(selectionModel[0])}`} passHref>
                                 <Button disabled={btnStatus} sx={{ ml: 1, mr: 1 }} color="secondary" variant="contained">Exibir Funcionário</Button>
                             </Link>
-                            <Button disabled={btnStatus} color="secondary" variant="contained" onClick={handleClickOpen}>Simular Promoção</Button>
-                            <Dialog fullScreen open={open} onClose={handleClose}>
-                                <AppBar sx={{ position: 'relative' }}>
-                                <Toolbar>
-                                    <IconButton
-                                    edge="start"
-                                    color="inherit"
-                                    onClick={handleClose}
-                                    aria-label="close">
-                                    <CloseIcon />
-                                    </IconButton>
-                                    <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                                        Simulação de Promoção
-                                    </Typography>
-                                    <Button autoFocus color="secondary" variant="contained" onClick={handleClose}>
-                                        Promover
-                                    </Button>
-                                </Toolbar>
-                                </AppBar>
-                                <Container maxWidth="xl" sx={{p:8}}>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={12}>
-                                            <TextField fullWidth id="outlined-basic" label="Salário Atual" variant="outlined" size="small"/>
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                            <TextField fullWidth id="outlined-basic" label="Salário com Bonificação" variant="outlined" size="small"/>
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                            <TextField fullWidth id="outlined-basic" label="Novo Cargo" variant="outlined" size="small"/>
-                                        </Grid>
-                                    </Grid>
-                                </Container>
-                            </Dialog>
                         </Box>
                     </Grid>
                     <Grid item xs={12}>

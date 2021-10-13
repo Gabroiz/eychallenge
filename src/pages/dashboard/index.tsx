@@ -15,6 +15,7 @@ import { useEffect } from 'react';
 import BudgetUses from 'Components/BudgetUses';
 import Indicators from 'Components/Indicators';
 import { height } from '@mui/system';
+import DissentUses from 'Components/DissentUses';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -95,11 +96,13 @@ export default function Dashboard() {
   const [emps, setEmps] = React.useState([]);
   const [lastPromotions, setLastPromotions] = React.useState([]);
   const [budgetUses, setBudgetHistory] = React.useState([]);
-  
+  const [dissentUses, setdissentUses] = React.useState([]);
+
   useEffect(() => {
     getEmployesData();
     getLastPromotionsData();
     getbudgetUses();
+    getdissentUses();
   }, [])
 
   async function getEmployesData() {
@@ -117,6 +120,12 @@ export default function Dashboard() {
   async function getbudgetUses() {
     await api.get('https://performance-tracker-fiap.herokuapp.com/history/budgets').then((response) => {
       setBudgetHistory(response.data)
+    })
+  }
+
+  async function getdissentUses() {
+    await api.get('https://performance-tracker-fiap.herokuapp.com/history/dissents').then((response) => {
+      setdissentUses(response.data)
     })
   }
 
@@ -150,7 +159,6 @@ export default function Dashboard() {
             </TabPanel>
           </Box>
         </Box>
-        
       </Grid>
       <Grid item xs={12} sm={12} lg={4} >
         <Box sx={styles.boxHistory} >
@@ -158,6 +166,7 @@ export default function Dashboard() {
             <Tabs value={value} onChange={(event, newValue) => { setValue(newValue);}} aria-label="basic tabs example" centered>
               <Tab label="Promoções realizadas" {...a11yProps(0)} />
               <Tab label="Budget utilizado" {...a11yProps(1)} />
+              <Tab label="Budget utilizado" {...a11yProps(2)} />
             </Tabs>
           </Box>
           <Paper elevation={0}>
@@ -166,6 +175,9 @@ export default function Dashboard() {
             </TabPanel>
             <TabPanel value={value} index={1}>
               <BudgetUses rows={budgetUses} pageRows={6} headerHeight={37} rowHeight={31} height={320} />
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              <DissentUses rows={dissentUses} pageRows={6} headerHeight={37} rowHeight={31} height={320} />
             </TabPanel>
           </Paper>
         </Box>

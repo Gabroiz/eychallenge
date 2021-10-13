@@ -9,10 +9,6 @@ import { useCallback, useState } from 'react';
 import { FileError, FileRejection, useDropzone } from 'react-dropzone';
 import { SingleFileUploadWithProgress } from '../../components/Uploads/SingleFileUploadWithProgress';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import stream from 'stream';
-import { promisify } from 'util';
-import fetch from 'node-fetch';
-
 
 const Input = styled('input')({
     display: 'none',
