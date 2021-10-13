@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import { Paper, Grid, Typography, Box, ClickAwayListener } from '@mui/material';
+import { Paper, Grid, Typography, Box, ClickAwayListener, useMediaQuery, useTheme, Alert, AlertTitle, Snackbar } from '@mui/material';
 import { DataGrid, GridColDef, GridSelectionModel } from '@mui/x-data-grid';
 import Link from 'next/link';
 
@@ -9,6 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import { styles } from './indexStyle'
 import { makeStyles } from '@mui/styles';
+import { api } from 'services/api';
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'id', hide: true },
@@ -64,6 +65,19 @@ type Props = {
     height: number;
 };
 
+const dissentColumns: GridColDef[] = [
+    { field: 'country', headerName: 'Pais', width: 100 },
+    { field: 'city', headerName: 'Cidade', width: 100 },
+    { field: 'smuName', headerName: 'SMU', width: 250 },
+    { field: 'budget', headerName: 'Budget after dissent', width: 250 },
+];
+
+type Dissent = {
+    smus: any[];
+    invalidSmus: any[];
+    totalBudget: number;
+}
+
 const Emp: React.FC<Props> = (props) => {
     
     const { pageRows, headerHeight, rowHeight, heightPaper, height, rows} = props
@@ -82,17 +96,104 @@ const Emp: React.FC<Props> = (props) => {
         setOpen(true);
     } 
 
+    const [openDissidio, setOpenDissidio] = React.useState(false);
+
+    const [dissentsSimulation, setDissentsSimulation] = React.useState<Dissent>({
+        smus: [],
+        invalidSmus: [],
+        totalBudget: 0
+    });
+
+    const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+
+    const handleClickDissidio = async () => {
+        setOpenDissidio(true);
+
+        const response = await api.get('/dissent/simulate')
+        
+        setDissentsSimulation(response.data)
+    }
+
+    const handleApplyDissidio = async () => {
+        const response = await api.post('/dissent/apply')
+        setSnackbarOpen(true)
+    }
+
+    const handleDissidioClose = () => {
+        setOpenDissidio(false);
+    }
+
     const handleClose = () => {
         setOpen(false);
     }
 
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
+    }
+
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
     return (
         <Grid container spacing={1}>
+            <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+                <Alert severity="success">
+                    <AlertTitle>Sucesso!</AlertTitle>
+                    Dissídio anual aplicado com sucesso!
+                </Alert>
+            </Snackbar>
+            <Dialog fullScreen={false} open={openDissidio} onClose={handleDissidioClose}>
+                <AppBar sx={{ position: 'relative' }}>
+                <Toolbar>
+                    <IconButton
+                    edge="start"
+                    color="inherit"
+                    onClick={handleClickDissidio}
+                    aria-label="close">
+                    <CloseIcon />
+                    </IconButton>
+                    <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                        Simulação de Dissídio
+                    </Typography>
+                    <Button autoFocus color="secondary" variant="contained" onClick={handleApplyDissidio}>
+                        Aplicar Dissídio
+                    </Button>
+                </Toolbar>
+                </AppBar>
+                <Container style={{ height: 700, width: 750 }}>
+                <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                    SMUs sem conflito de budget:
+                </Typography>
+                
+                <DataGrid
+                    rows={dissentsSimulation.smus}
+                    columns={dissentColumns}
+                    pageSize={4}
+                    rowsPerPageOptions={[4]}
+                />
+
+<               Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                    SMUs com conflito de budget:
+                </Typography>
+                
+                <DataGrid
+                    rows={dissentsSimulation.invalidSmus}
+                    columns={dissentColumns}
+                    pageSize={4}
+                    rowsPerPageOptions={[4]}
+                />
+
+                <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                    Budget total a ser utilizado para aplicação do dissídio anual: R$ {dissentsSimulation.totalBudget},00
+                </Typography>
+                </Container>
+            </Dialog>
             <Grid item xs={12}>
                 <Paper sx={{ p: 2, height: heightPaper }} elevation={0}>
                     <Grid container direction="row" justifyContent="space-between" >
                         <Typography component="h2" variant="h6" gutterBottom>Funcionarios</Typography>
                         <Box>
+                            <Button color="secondary" variant="contained" onClick={handleClickDissidio}>Simular Dissídio</Button>
                             <Link href={`/dashboard/employees/${encodeURIComponent(selectionModel[0])}`} passHref>
                                 <Button disabled={btnStatus} sx={{ ml: 1, mr: 1 }} color="secondary" variant="contained">Exibir Funcionário</Button>
                             </Link>
@@ -115,7 +216,7 @@ const Emp: React.FC<Props> = (props) => {
                                     </Button>
                                 </Toolbar>
                                 </AppBar>
-                                <Container maxWidth="xl" sx={{p:5}}>
+                                <Container maxWidth="xl" sx={{p:8}}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
                                             <TextField fullWidth id="outlined-basic" label="Salário Atual" variant="outlined" size="small"/>
