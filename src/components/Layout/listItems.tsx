@@ -27,7 +27,7 @@ export const mainListItems = (
         <ListItemText primary="Funcionários" />
       </ListItem>
     </Link>
-    <Link href='/dashboard/companies' passHref>
+    <Link href='/dashboard/controls' passHref>
       <ListItem button>
         <ListItemIcon>
           <BuildCircleIcon />

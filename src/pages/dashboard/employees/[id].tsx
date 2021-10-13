@@ -18,9 +18,13 @@ import ErrorPage from 'next/error'
 import { styles } from 'Styles/dashboard/employees/idStyle'
 import { GetServerSideProps } from 'next';
 
+import Simulator from 'Components/Simulator'
+
 import { useTheme } from '@mui/material/styles';
 
 import { parseCookies } from 'nookies';
+import { useEffect } from 'react';
+import { api } from 'services/api';
 
 type Emp = {
     emp: EmpType
@@ -52,6 +56,15 @@ type EmpType = {
     //promotionDate: string
 }
 
+var formatter = new Intl.NumberFormat('pt-br', {
+    style: 'currency',
+    currency: 'BRL',
+    
+    // These options are needed to round to whole numbers if that's what you want.
+    minimumFractionDigits: 2, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+    maximumFractionDigits: 3, // (causes 2500.99 to be printed as $2,501)
+});
+
 const cookies = parseCookies();
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -65,9 +78,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         headers: headers
     }
 
-    const res = await fetch(`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/4331`,config)
+    const { id } = context.params
+
+    const res = await fetch(`https://performance-tracker-fiap.herokuapp.com/employee-evaluation/${id}`,config)
     const emp: EmpType[] = await res.json()
-  
+    
     return {
         props: {
             emp,
@@ -106,15 +121,24 @@ const Employee = ({ emp }: Emp) => {
     const [hiringDate, setHiringDate] = React.useState<Date | null>(parse(emp.hiringDate, 'yyyy-dd-MM', new Date()));
     const [lastPromotionDate, setLastPromotionDate] = React.useState<Date | null>(parse(emp.hiringDate, 'yyyy-dd-MM', new Date()));
 
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-
     const [open, setOpen] = React.useState(false);
-    const handleClickOpen = () => {
-        setOpen(true);
-    }
-    const handleClose = () => {
-        setOpen(false);
+
+    const [totalBudget, setBudget] = React.useState(0);
+    
+    useEffect(() => {
+        getBudgetData();
+    }, [])
+    
+    function getBudgetData() {
+        api.get('/smu').then((response) => {
+          let totalBudget = 0;
+          
+          response.data.map((record: { budget: number; totalBudget: number; }) => {
+            totalBudget += record.budget;
+          })
+          
+          setBudget(totalBudget)
+        })
     }
 
     const router = useRouter()
@@ -251,84 +275,8 @@ const Employee = ({ emp }: Emp) => {
                     </Grid>
                     <Grid item xs={12} md={12} marginTop={2}>
                         <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                            <Button color="secondary" variant="contained" onClick={handleClickOpen}>Simular Promoção</Button>
-                            <Dialog
-                                fullScreen={fullScreen}
-                                open={open}
-                                onClose={handleClose}
-                                aria-labelledby="responsive-dialog-title"
-                            >
-                                <AppBar sx={{ position: 'relative' }}>
-                                <Toolbar>
-                                    <IconButton
-                                    edge="start"
-                                    color="inherit"
-                                    onClick={handleClose}
-                                    aria-label="close">
-                                    <CloseIcon />
-                                    </IconButton>
-                                    <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                                        Simulação de Promoção
-                                    </Typography>
-                                    <Button autoFocus color="secondary" variant="contained" onClick={handleClose}>
-                                        Promover
-                                    </Button>
-                                </Toolbar>
-                                </AppBar>
-                                <Container maxWidth="xl" sx={{p:5}}>
-                                    <Grid container spacing={2}>
-                                        <Grid container item xs={12} spacing={3}>
-                                            <Grid item xs={12} sm={6} md={2}>
-                                                <TextField fullWidth id="outlined-basic" label="GPN" defaultValue={emp.gpn} variant="filled" size="small" InputProps={{readOnly: true}}/>
-                                            </Grid>
-                                            <Grid item xs={12} sm={6} md={3}>
-                                                <TextField fullWidth id="outlined-basic" label="Nome" defaultValue={emp.name} variant="filled" size="small" InputProps={{readOnly: true}}/>
-                                            </Grid>
-                                            <Grid item xs={12} sm={6} md={2}>
-                                                <TextField fullWidth id="outlined-basic" label="Situação de Promoção" defaultValue={emp.promotion} variant="filled" size="small" InputProps={{readOnly: true}}/>
-                                            </Grid>
-                                            <Grid item xs={12} sm={6} md={2}>
-                                                <TextField fullWidth id="outlined-basic" label="Lead atual" defaultValue={emp.actualLead} variant="filled" size="small" InputProps={{readOnly: true}}/>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={12} sm={6} md={3}>
-                                            <InputLabel htmlFor="standard-adornment-amount" >Salário Atual</InputLabel>
-                                            <Input 
-                                                fullWidth
-                                                id="standard-adornment-amount"
-                                                required={true}
-                                                value={emp.salary}
-                                                //onChange={handleChange('amount')}
-                                                startAdornment={<InputAdornment position="start">R$</InputAdornment>}
-                                                
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6} md={3}>
-                                            <InputLabel htmlFor="standard-adornment-amount">Salário com Bonificação</InputLabel>
-                                            <Input 
-                                                fullWidth
-                                                required={true}
-                                                id="standard-adornment-amount"
-                                                value={emp.salary}
-                                                //onChange={handleChange('amount')}
-                                                startAdornment={<InputAdornment position="start">R$</InputAdornment>}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6} md={6}>
-                                            <TextField fullWidth id="outlined-basic" label="Cargo atual" variant="filled" size="small" InputProps={{readOnly: true}}/>
-                                        </Grid>
-                                        <Grid item xs={12} sm={6} md={6}>
-                                            <TextField fullWidth id="outlined-basic" label="Novo Cargo" variant="filled" size="small" InputProps={{readOnly: true}}/>
-                                        </Grid>
-                                        <Grid item xs={12} sm={6} md={3}>
-                                            <TextField fullWidth id="outlined-basic" label="Budget Atual" variant="filled" size="small" InputProps={{readOnly: true}}/>
-                                        </Grid>
-                                        <Grid item xs={12} sm={6} md={3}>
-                                            <TextField fullWidth id="outlined-basic" label="Budget Restante" variant="filled" size="small" InputProps={{readOnly: true}}/>
-                                        </Grid>
-                                    </Grid>
-                                </Container>
-                            </Dialog>
+                            <Button color="secondary" variant="contained" onClick={() => {setOpen(true)}}>Simular Promoção</Button>
+                            <Simulator />
                         </Box>
                     </Grid>
                 </Grid>

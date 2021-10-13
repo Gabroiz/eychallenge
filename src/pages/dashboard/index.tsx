@@ -13,6 +13,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { api } from 'services/api';
 import { useEffect } from 'react';
 import BudgetUses from 'Components/BudgetUses';
+import Indicators from 'Components/Indicators';
 import { height } from '@mui/system';
 
 interface TabPanelProps {
@@ -94,7 +95,7 @@ export default function Dashboard() {
   const [emps, setEmps] = React.useState([]);
   const [lastPromotions, setLastPromotions] = React.useState([]);
   const [budgetUses, setBudgetHistory] = React.useState([]);
-
+  
   useEffect(() => {
     getEmployesData();
     getLastPromotionsData();
@@ -130,7 +131,7 @@ export default function Dashboard() {
       </Grid>
       <Grid item xs={12} sm={12} lg={8}>
         <Box style={styles.paperDefault}>
-          <Box sx={styles.box}>
+          <Box>
             <Box>
               <Tabs value={valueTab1} onChange={(event, newValue) => { setvalueTab1(newValue);}} aria-label="basic tabs example" centered>
                 <Tab label="Budget por área" {...a11yProps2(0)} />
@@ -145,23 +146,7 @@ export default function Dashboard() {
               </TabPanel>
             </Paper>
             <TabPanel value={valueTab1} index={1}>
-              <Grid container spacing={3}>
-                <Grid item xs={4}>
-                  <Paper sx={{p:1, height: 80}} variant="outlined"  >
-                    <Typography> Budget </Typography>
-                  </Paper>
-                </Grid>
-                <Grid item  xs={4}>
-                <Paper sx={{p:1, height: 80}} variant="outlined"  >
-                    <Typography> Promotions </Typography>
-                  </Paper>
-                </Grid>
-                <Grid item  xs={4}>
-                  <Paper sx={{p:1, height: 80}} variant="outlined"  >
-                    <Typography> Progress </Typography>
-                  </Paper>
-                </Grid>
-              </Grid>
+              <Indicators/>
             </TabPanel>
           </Box>
         </Box>
@@ -186,7 +171,7 @@ export default function Dashboard() {
         </Box>
       </Grid>
       <Grid item xs={12} sm={12} lg={8}>
-        <Emp rows={emps} pageRows={6} headerHeight={37} rowHeight={31} heightPaper={400} height={300} />
+        <Emp rows={emps} pageRows={7} headerHeight={37} rowHeight={31} heightPaper={400} height={320} />
       </Grid>
     </Grid>
   )

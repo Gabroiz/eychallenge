@@ -10,16 +10,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { styles } from './indexStyle'
 import { makeStyles } from '@mui/styles';
 
-type EmpType = {
-    id: number
-    gpn: string
-    name: string
-    jobTitle: string
-    promotion: string
-    actualLead: string
-    futureRank: string
-}
-
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'id', hide: true },
     { field: 'gpn', headerName: 'GPN', flex: 0.1, minWidth: 130, },
@@ -29,6 +19,16 @@ const columns: GridColDef[] = [
     { field: 'actualLead', headerName: 'Lead Atual', flex: 0.1 },
     { field: 'futureRank', headerName: 'Próximo Cargo', flex: 0.1 },
 ];
+
+type EmpType = {
+    id: number
+    gpn: string
+    name: string
+    jobTitle: string
+    promotion: string
+    actualLead: string
+    futureRank: string
+}
 
 const useStyles = makeStyles({
     root: {
@@ -132,7 +132,7 @@ const Emp: React.FC<Props> = (props) => {
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
-                        <Box sx={{ display: 'flex', mt: 3, height: height }} >
+                        <Box sx={{ display: 'flex', mt: 1, height: height }} >
                             <Box style={styles.boxTable}>
                                 <ClickAwayListener onClickAway={() => { handleClick(true) }}>
                                     <DataGrid

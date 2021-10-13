@@ -53,6 +53,7 @@ export default function Employees() {
             setEmps(response.data)
         })
     }
+    
     return (
         <Emp rows={emps} pageRows={20} headerHeight={37} rowHeight={31} heightPaper={850} height={750}/>
     )

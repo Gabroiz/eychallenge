@@ -4,6 +4,7 @@
     "paths": {
       "Components/*": ["components/*"],
       "Styles/*": ["styles/pages/*"],
+      "Types/*": ["types/*"],
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
