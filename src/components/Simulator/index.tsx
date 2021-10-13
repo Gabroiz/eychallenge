@@ -6,25 +6,22 @@ import CloseIcon from '@mui/icons-material/Close';
 export default function Simulator(){
     
     const [open, setOpen] = React.useState(false);
-    const handleClose = () => {
-        setOpen(false);
-    }
 
     return (
-        <Dialog fullScreen open={open} onClose={handleClose}>
+        <Dialog fullScreen open={open} onClose={() => {setOpen(false)}}>
             <AppBar sx={{ position: 'relative' }}>
             <Toolbar>
                 <IconButton
                 edge="start"
                 color="inherit"
-                onClick={handleClose}
+                onClick={() => {setOpen(false)}}
                 aria-label="close">
                 <CloseIcon />
                 </IconButton>
                 <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
                     Simulação de Promoção
                 </Typography>
-                <Button autoFocus color="secondary" variant="contained" onClick={handleClose}>
+                <Button autoFocus color="secondary" variant="contained" onClick={() => {setOpen(false)}}>
                     Promover
                 </Button>
             </Toolbar>

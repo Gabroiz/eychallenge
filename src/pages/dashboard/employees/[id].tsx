@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Layout from 'Components/Layout'
 import Button from '@mui/material/Button';
-import { Paper, IconButton, Grid, TextField, Select, MenuItem, InputLabel, SelectChangeEvent, FormControl, Box, Dialog, AppBar, Toolbar, Typography, Container, ThemeProvider, createTheme, InputAdornment, Input, useMediaQuery } from '@mui/material';
+import { Paper, IconButton, Grid, TextField, Select, MenuItem, InputLabel, FormControl, Box, Dialog, AppBar, Toolbar, Typography, Container, ThemeProvider, createTheme, InputAdornment, Input, useMediaQuery } from '@mui/material';
 import { AddBox, HighlightOff} from '@mui/icons-material';
 import { green, red } from '@mui/material/colors';
 import CloseIcon from '@mui/icons-material/Close';
@@ -18,13 +18,13 @@ import ErrorPage from 'next/error'
 import { styles } from 'Styles/dashboard/employees/idStyle'
 import { GetServerSideProps } from 'next';
 
-import Simulator from 'Components/Simulator'
-
 import { useTheme } from '@mui/material/styles';
 
 import { parseCookies } from 'nookies';
 import { useEffect } from 'react';
 import { api } from 'services/api';
+
+import PieChart from 'Components/PieChart';
 
 type Emp = {
     emp: EmpType
@@ -122,6 +122,12 @@ const Employee = ({ emp }: Emp) => {
     const [lastPromotionDate, setLastPromotionDate] = React.useState<Date | null>(parse(emp.hiringDate, 'yyyy-dd-MM', new Date()));
 
     const [open, setOpen] = React.useState(false);
+    const handleClickOpen = () => {
+        setOpen(true);
+    }
+    const handleClose = () => {
+        setOpen(false);
+    }
 
     const [totalBudget, setBudget] = React.useState(0);
     
@@ -140,6 +146,9 @@ const Employee = ({ emp }: Emp) => {
           setBudget(totalBudget)
         })
     }
+
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
     const router = useRouter()
     if ( !emp?.id) {
@@ -235,7 +244,7 @@ const Employee = ({ emp }: Emp) => {
                             />
                         </LocalizationProvider>
                     </Grid>
-                    <Grid item xs={12} marginTop={1}><Typography variant="h6">Características</Typography></Grid>
+                    {/* <Grid item xs={12} marginTop={1}><Typography variant="h6">Características</Typography></Grid>
                     <Grid item xs={12} sm={6} md={6}>
                         <FormControl sx={{ width: "100%"  }} size="small">
                             <InputLabel id="attribute-select-label" >Característica</InputLabel>
@@ -272,11 +281,98 @@ const Employee = ({ emp }: Emp) => {
                                 <MenuItem value=""> <em>None</em> </MenuItem>
                             </Select>
                         </FormControl>
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12} md={12} marginTop={2}>
                         <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
                             <Button color="secondary" variant="contained" onClick={() => {setOpen(true)}}>Simular Promoção</Button>
-                            <Simulator />
+                            <Dialog
+                                fullScreen={fullScreen}
+                                open={open}
+                                onClose={handleClose}
+                                aria-labelledby="responsive-dialog-title"
+                            >
+                                <AppBar sx={{ position: 'relative' }}>
+                                <Toolbar>
+                                    <IconButton
+                                    edge="start"
+                                    color="inherit"
+                                    onClick={handleClose}
+                                    aria-label="close">
+                                    <CloseIcon />
+                                    </IconButton>
+                                    <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                                        Simulação de Promoção
+                                    </Typography>
+                                    <Button autoFocus color="secondary" variant="contained" onClick={handleClose}>
+                                        Promover
+                                    </Button>
+                                </Toolbar>
+                                </AppBar>
+                                <Container maxWidth="xl" sx={{p:5}}>
+                                    <Grid container spacing={2}>
+                                        <Grid container item xs={12} spacing={3}>
+                                            <Grid item xs={12} sm={6} md={2}>
+                                                <TextField fullWidth id="outlined-basic" label="GPN" defaultValue={emp.gpn} variant="filled" size="small" InputProps={{readOnly: true}}/>
+                                            </Grid>
+                                            <Grid item xs={12} sm={6} md={4}>
+                                                <TextField fullWidth id="outlined-basic" label="Nome" defaultValue={emp.name} variant="filled" size="small" InputProps={{readOnly: true}}/>
+                                            </Grid>
+                                            <Grid item xs={12} sm={6} md={3}>
+                                                <TextField fullWidth id="outlined-basic" label="Situação de Promoção" defaultValue={emp.promotion} variant="filled" size="small" InputProps={{readOnly: true}}/>
+                                            </Grid>
+                                            <Grid item xs={12} sm={6} md={3}>
+                                                <TextField fullWidth id="outlined-basic" label="Lead atual" defaultValue={emp.actualLead} variant="filled" size="small" InputProps={{readOnly: true}}/>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6}>
+                                            <TextField fullWidth id="outlined-basic" defaultValue={emp.actualRank} label="Cargo atual" variant="filled" size="small" InputProps={{readOnly: true}}/>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={3}>
+                                            <InputLabel htmlFor="standard-adornment-amount" >Salário Atual</InputLabel>
+                                            <Input 
+                                                fullWidth
+                                                id="standard-adornment-amount"
+                                                required={true}
+                                                value={emp.salary}
+                                                //onChange={handleChange('amount')}
+                                                startAdornment={<InputAdornment position="start">R$</InputAdornment>}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6}>
+                                            <TextField fullWidth id="outlined-basic" defaultValue={emp.futureRank} label="Novo Cargo" variant="filled" size="small" InputProps={{readOnly: true}}/>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={3}>
+                                            <InputLabel htmlFor="standard-adornment-amount">Salário com Bonificação</InputLabel>
+                                            <Input 
+                                                fullWidth
+                                                required={true}
+                                                id="standard-adornment-amount"
+                                                value={emp.salary}
+                                                //onChange={handleChange('amount')}
+                                                startAdornment={<InputAdornment position="start">R$</InputAdornment>}
+                                            />
+                                        </Grid>
+                                        <Grid container item xs={12} spacing={2}>
+                                            <Grid item xs={12} sm={6}>
+                                                <Paper sx={{ p:1 }} variant='outlined'>
+                                                    <Typography variant='subtitle1' >Budget Total</Typography>
+                                                    <Box sx={{ p:1 }}>
+                                                        <Typography variant='h5'>{formatter.format(totalBudget)}</Typography>
+                                                    </Box>
+                                                </Paper>
+                                            </Grid>
+                                            <Grid item xs={12} sm={6}>
+                                                <Paper sx={{ p:1 }} variant='outlined'>
+                                                    <Typography variant='subtitle1' >Budget Restante</Typography>
+                                                    <Box sx={{ p:1 }}>
+                                                        <Typography variant='h5'>{formatter.format(totalBudget)}</Typography>
+                                                    </Box>
+                                                </Paper>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Container>
+                            </Dialog>
                         </Box>
                     </Grid>
                 </Grid>
