@@ -8,6 +8,11 @@ import { styles } from 'Styles/dashboard/importsStyle';
 import { useCallback, useState } from 'react';
 import { FileError, FileRejection, useDropzone } from 'react-dropzone';
 import { SingleFileUploadWithProgress } from '../../components/Uploads/SingleFileUploadWithProgress';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import stream from 'stream';
+import { promisify } from 'util';
+import fetch from 'node-fetch';
+
 
 const Input = styled('input')({
     display: 'none',
@@ -110,7 +115,38 @@ export default function Imports() {
                     </Grid>
                 </Paper>
             </Grid>
+            <Grid item xs={12}>
+                <Paper sx={styles.paper} elevation={0}>
+                    <Grid container spacing={2} justifyContent="space-between">
+                        <Grid item xs={12}>
+                            <Typography sx={styles.title} variant="h6">Exportar Bases CSV</Typography>
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                            <label htmlFor="contained-button-file" >
+                                <Button variant="contained" startIcon={<FileDownloadIcon />}  href="https://performance-tracker-fiap.herokuapp.com/employee-evaluation/csv">Avaliação Colaborador</Button>
+                            </label>
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                            <label htmlFor="contained-button-file" >
+                                <Button variant="contained" startIcon={<FileDownloadIcon />}  href="https://performance-tracker-fiap.herokuapp.com/base-salary/csv">Salário Base</Button>
+                            </label>
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                            <label htmlFor="contained-button-file" >
+                                <Button variant="contained" startIcon={<FileDownloadIcon />}  href="https://performance-tracker-fiap.herokuapp.com/utilization/csv">Utilização</Button>
+                            </label>
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                            <label htmlFor="contained-button-file" >
+                                <Button variant="contained" startIcon={<FileDownloadIcon />}  href="https://performance-tracker-fiap.herokuapp.com/smu/csv">SMU</Button>
+                            </label>
+                        </Grid>
+                    </Grid>
+                </Paper>
+            </Grid>
+
         </Grid>
+
     )
 }
 
@@ -119,3 +155,4 @@ Imports.getLayout = function getLayout(page: React.ReactElement) {
         <Layout>{page}</Layout>
     )
 }
+
