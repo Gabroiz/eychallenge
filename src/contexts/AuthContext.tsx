@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import Router from 'next/router'
-import { setCookie, parseCookies } from 'nookies';
+import { setCookie, parseCookies, destroyCookie } from 'nookies';
 import { api } from "../services/api";
 
 type User = {
@@ -15,6 +15,7 @@ type SingInCredentials = {
 
 type AuthContextData = {
   signIn(credentials: SingInCredentials): Promise<void>;
+  singOut(): Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -86,13 +87,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   function singOut() {
+    destroyCookie(null, 'auth.token')
+    destroyCookie(null, 'auth.refreshToken')
 
+    Router.push('/')
   }
 
   return (
     <AuthContext.Provider
       value={{
         signIn,
+        singOut,
         isAuthenticated,
       }}
     >

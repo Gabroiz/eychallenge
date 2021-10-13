@@ -51,21 +51,20 @@ export default function Imports() {
         )
     }
 
-    function onSubmit(file: File){
-
+    function onSubmit(file: File,) {
+        console.log(file)
     }
 
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <Paper sx={styles.paper} elevation={0}>
-                    <Grid container spacing={2} justifyContent="space-between">
-                        <Grid item xs={12}>
-                            <Typography sx={styles.title} variant="h6">Importações</Typography>
-                        </Grid>
-                        <Grid item xs={6} md={3}>
-                            <FormControl sx={{ width: "100%" }} size="small">
+                <Paper sx={styles.paper}>
+                    <Grid container component="form" justifyContent="space-between" sx={styles.page}>
+                        <Grid item xs={12}><Typography sx={styles.title} variant="h6">Importações</Typography></Grid>
+
+                        <Grid item xs={8} md={3} sx={styles.component}>
+                            <FormControl sx={{ width: '15rem' }} size="small">
                                 <InputLabel id="attribute-select-label" >Base de Informações</InputLabel>
                                 <Select labelId="attribute-select-label" id="attribute-select" value={importOption} label="Base de Informações" onChange={handleChange}>
                                     <MenuItem value=""> <em>None</em> </MenuItem>
@@ -77,7 +76,7 @@ export default function Imports() {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={6} md={8}>
+                        <Grid item xs={6} md={8} sx={styles.component}>
                             <div {...getRootProps()}>
                                 <Input {...getInputProps()} />
                                 <Button variant="outlined" size="large" startIcon={<FileCopy />}>Clique aqui ou arraste aqui os arquivos .CSV!</Button>
@@ -86,19 +85,22 @@ export default function Imports() {
                             {/* {JSON.stringify(files)}  */}
                         </Grid>
 
-                        <Grid item xs={10} md={10}>
-                            {files.map((fileWrapper, idx) => (
-                                <SingleFileUploadWithProgress onUpload={onUpload} onDelete={onDelete} key={idx} file={fileWrapper.file} />
-                            ))}
-                        </Grid>
+                        {files.lenght > 0 ? (
+                            <Grid item xs={10} md={10} sx={styles.component}>
+                                {files.map((fileWrapper, idx) => (
+                                    <SingleFileUploadWithProgress onUpload={onUpload} onDelete={onDelete} key={idx} file={fileWrapper.file} />
+                                ))}
+                            </Grid>
 
-                        <Grid item xs={6} md={4}>
+                        ) : ''}
+
+                        <Grid item xs={6} md={4} sx={styles.component}>
                             <label htmlFor="contained-button-file">
                                 <Input accept="*" id="contained-button-file" multiple type="file" disabled onChange={handleChange} />
-                                <Button 
-                                    variant="contained" 
-                                    component="span" 
-                                    startIcon={<Publish />} 
+                                <Button
+                                    variant="contained"
+                                    component="span"
+                                    startIcon={<Publish />}
                                     disabled={btnDisabled}
                                 >
                                     Importar CSV

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext } from 'react'
 import Link from 'next/link'
 import { ListItemIcon, ListSubheader, ListItemText, ListItem } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -6,7 +6,8 @@ import PeopleIcon from '@mui/icons-material/People';
 import LogoutIcon from '@mui/icons-material/Logout';
 import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 import UploadIcon from '@mui/icons-material/Upload';
-
+import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import { AuthContext } from 'contexts/AuthContext';
 
 export const mainListItems = (
   <div>
@@ -45,16 +46,20 @@ export const mainListItems = (
   </div>
 );
 
-export const secondaryListItems = (
-  <div>
-    <ListSubheader inset>Outros</ListSubheader>
-    <Link href='/dashboard/imports' passHref>
-      <ListItem button>
-        <ListItemIcon>
-          <LogoutIcon />
-        </ListItemIcon>
-        <ListItemText primary="Sair" />
-      </ListItem>
-    </Link>
-  </div>
-);
+
+export function SecondaryListItems() {
+  const { singOut } = useContext(AuthContext);
+  return (
+    <div>
+      <ListSubheader inset></ListSubheader>
+      <Link href='' passHref>
+        <ListItem button onClick={() => singOut()}>
+          <ListItemIcon>
+            <MeetingRoomIcon />
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
+        </ListItem>
+      </Link>
+    </div>
+  );
+}

@@ -17,7 +17,7 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems, secondaryListItems } from './listItems';
+import { mainListItems, SecondaryListItems } from './listItems';
 
 const drawerWidth: number = 240;
 
@@ -104,7 +104,7 @@ export default function DashboardContent({ children }: LayoutProps) {
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
-          <Toolbar sx={{ pr: '24px'  }}> {/*keep right padding when drawer closed*/}
+          <Toolbar sx={{ pr: '24px' }}> {/*keep right padding when drawer closed*/}
             <IconButton
               edge="start"
               color="inherit"
@@ -122,7 +122,7 @@ export default function DashboardContent({ children }: LayoutProps) {
               color="inherit"
               noWrap
               sx={{ flexGrow: 1 }}>
-              Emplex - EY 
+              Emplex - EY
             </Typography>
           </Toolbar>
         </AppBar>
@@ -140,8 +140,9 @@ export default function DashboardContent({ children }: LayoutProps) {
           </Toolbar>
           <Divider />
           <List>{mainListItems}</List>
-          <Divider />
-          <List>{secondaryListItems}</List>
+          <List sx={{ marginTop: 'auto' }}>
+            <SecondaryListItems />
+          </List>
         </Drawer>
         <Box
           component="main"

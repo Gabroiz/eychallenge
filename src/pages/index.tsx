@@ -53,8 +53,7 @@ export default function SignIn() {
 
   const { handleSubmit, control, formState: { errors }, } = useForm({
     resolver: yupResolver(schema),
-  }
-  );
+  });
 
   function signInSubmit(data: any) {
     console.log(data)
