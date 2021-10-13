@@ -36,10 +36,10 @@ export default function Imports() {
     }, []);
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-    function onUpload(file: File, url: string) {
+    function onUpload(file: File) {
         setFiles((curr) => curr.filter((fw) => {
             if (fw.file === file) {
-                return { ...fw, url };
+                return { ...fw};
             }
             return fw;
         }));

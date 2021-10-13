@@ -6,7 +6,7 @@ import { FileHeader } from "./FileHeader";
 export interface SingleFileUploadWithProgressProps{
     file: File;
     onDelete: (file: File) => void;
-    onUpload: (file: File, url: string) => void;
+    onUpload: (file: File) => void;
 }
 
 export function SingleFileUploadWithProgress({file, onDelete, onUpload}: SingleFileUploadWithProgressProps){
@@ -16,7 +16,7 @@ export function SingleFileUploadWithProgress({file, onDelete, onUpload}: SingleF
     useEffect(() => {
         async function upload() {
             const url = await uploadFile(file, setProgress);
-            onUpload(file, url);
+            onUpload(file);
         }
 
         upload ()
@@ -30,7 +30,7 @@ export function SingleFileUploadWithProgress({file, onDelete, onUpload}: SingleF
 function uploadFile(file: File, onProgress: (percentage: number) => void) {
     const url = '';
     console.log(file);
-    return new Promise<string>((res, rej) => {
+    /* return new Promise<string>((res, rej) => {
         const xhr = new XMLHttpRequest();
         xhr.open('POST','url')
 
@@ -48,5 +48,5 @@ function uploadFile(file: File, onProgress: (percentage: number) => void) {
         const formData = new FormData();
         formData.append('file', file);
         xhr.send(formData)
-    });
+    }); */
 } 
